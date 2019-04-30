@@ -1,29 +1,33 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
 namespace MMRando
 {
 
-    public partial class ROMFuncs
+    public static class VC_Inject
     {
 
         private static void GetApp5(byte[] ROM, string VCDir)
         {
-            BinaryReader a50 = new BinaryReader(File.Open(VCDir + "5-0", FileMode.Open));
-            BinaryReader a51 = new BinaryReader(File.Open(VCDir + "5-1", FileMode.Open));
-            BinaryWriter app5 = new BinaryWriter(File.Open(VCDir + "00000005.app", FileMode.Create));
-            byte[] buffer = new byte[a50.BaseStream.Length];
-            a50.Read(buffer, 0, buffer.Length);
-            app5.Write(buffer);
-            app5.Write(ROM);
-            buffer = new byte[a51.BaseStream.Length];
-            a51.Read(buffer, 0, buffer.Length);
-            app5.Write(buffer);
-            a50.Close();
-            a51.Close();
-            app5.Close();
+            byte[] a50;
+            using (var a50stream = new BinaryReader(File.Open(VCDir + "5-0", FileMode.Open)))
+            {
+                a50 = new byte[a50stream.BaseStream.Length];
+                a50stream.Read(a50, 0, a50.Length);
+            }
+            byte[] a51;
+            using (var a51stream = new BinaryReader(File.Open(VCDir + "5-1", FileMode.Open)))
+            {
+                a51 = new byte[a51stream.BaseStream.Length];
+                a51stream.Read(a51, 0, a51.Length);
+            }
+            using (var app5 = new BinaryWriter(File.Open(VCDir + "00000005.app", FileMode.Create)))
+            {
+                app5.Write(a50);
+                app5.Write(ROM);
+                app5.Write(a51);
+            }
         }
 
         private static byte[] AddVCHeader(byte[] ROM)
@@ -36,10 +40,12 @@ namespace MMRando
         {
             ROM = AddVCHeader(ROM);
             GetApp5(ROM, VCDir);
-            ProcessStartInfo p = new ProcessStartInfo();
-            p.FileName = "wadpacker.exe";
-            p.Arguments = "mm.tik mm.tmd mm.cert \"" + FileName + "\" -i NMRE";
-            p.WorkingDirectory = VCDir;
+            ProcessStartInfo p = new ProcessStartInfo
+            {
+                FileName = "wadpacker.exe",
+                Arguments = "mm.tik mm.tmd mm.cert \"" + FileName + "\" -i NMRE",
+                WorkingDirectory = VCDir
+            };
             Process.Start(p);
         }
 

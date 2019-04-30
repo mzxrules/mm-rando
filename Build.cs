@@ -402,7 +402,7 @@ namespace MMRando
             if (Output_VC)
             {
                 string VCFileName = saveWad.FileName;
-                ROMFuncs.BuildVC(ROM, VCDir, VCFileName);
+                VC_Inject.BuildVC(ROM, VCDir, VCFileName);
             }
         }
 
