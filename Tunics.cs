@@ -25,20 +25,22 @@ namespace MMRando
             };
         }
 
+        private static float Clamp(float value, float min, float max)
+        {
+            return (value < min) ? min : (value > max) ? max : value;
+        }
+
+        private static int Clamp(int value, int min, int max)
+        {
+            return (value < min) ? min : (value > max) ? max : value;
+        }
+
         private static ushort ToRGBA5551(Color c)
         {
             byte r = (byte)((c.R >> 3) & 0x1F);
             byte g = (byte)((c.G >> 3) & 0x1F);
             byte b = (byte)((c.B >> 3) & 0x1F);
-            byte a;
-            if (c.A > 0x7F)
-            {
-                a = 1;
-            }
-            else
-            {
-                a = 0;
-            };
+            byte a = (byte)((c.A > 0x7F) ? 1 : 0);
             return (ushort)((r << 11) | (g << 6) | (b << 1) | a);
         }
 
@@ -56,12 +58,12 @@ namespace MMRando
             float r = 0f;
             float g = 0f;
             float b = 0f;
-            float d = 1.0f / (float)count;
+            float d = 1.0f / count;
             for (int i = 0; i < count; i++)
             {
-                r += (float)c[i].R * d;
-                g += (float)c[i].G * d;
-                b += (float)c[i].B * d;
+                r += c[i].R * d;
+                g += c[i].G * d;
+                b += c[i].B * d;
             };
             return Color.FromArgb((int)Math.Round(r), (int)Math.Round(g), (int)Math.Round(b));
         }
@@ -77,7 +79,7 @@ namespace MMRando
             else
             {
                 a = GetAverageColour(c, count);
-            };
+            }
             float rot = target.GetHue() - a.GetHue();
             float avgb = a.GetBrightness();
             float avgs = a.GetSaturation();
@@ -118,22 +120,8 @@ namespace MMRando
                 {
                     h += 360f;
                 };
-                if (b < 0.0f)
-                {
-                    b = 0.0f;
-                };
-                if (b > 1.0f)
-                {
-                    b = 1.0f;
-                };
-                if (sat < 0.0f)
-                {
-                    sat = 0.0f;
-                };
-                if (sat > 1.0f)
-                {
-                    sat = 1.0f;
-                };
+                b = Clamp(b, 0.0f, 1.0f);
+                sat = Clamp(sat, 0.0f, 1.0f);
                 s[i] = FromAHSB(c[i].A, h, sat, b);
                 //this code is a mess
                 if (zora && grad)
@@ -150,30 +138,9 @@ namespace MMRando
                         int rr = (int)Interpolate(c[95].R, target.R, x0, x1, x);
                         int gg = (int)Interpolate(c[95].G, target.G, x0, x1, x);
                         int bb = (int)Interpolate(c[95].B, target.B, x0, x1, x);
-                        if (rr < 0)
-                        {
-                            rr = 0;
-                        };
-                        if (rr > 255)
-                        {
-                            rr = 255;
-                        };
-                        if (gg < 0)
-                        {
-                            gg = 0;
-                        };
-                        if (gg > 255)
-                        {
-                            gg = 255;
-                        };
-                        if (bb < 0)
-                        {
-                            bb = 0;
-                        };
-                        if (bb > 255)
-                        {
-                            bb = 255;
-                        };
+                        rr = Clamp(rr, 0, 255);
+                        gg = Clamp(gg, 0, 255);
+                        bb = Clamp(bb, 0, 255);
                         s[i] = Color.FromArgb(rr, gg, bb);
                     };
                 }
@@ -187,34 +154,13 @@ namespace MMRando
                         int rr = (int)Interpolate(s[14].R, c[31].R, x0, x1, x);
                         int gg = (int)Interpolate(s[14].G, c[31].G, x0, x1, x);
                         int bb = (int)Interpolate(s[14].B, c[31].B, x0, x1, x);
-                        if (rr < 0)
-                        {
-                            rr = 0;
-                        };
-                        if (rr > 255)
-                        {
-                            rr = 255;
-                        };
-                        if (gg < 0)
-                        {
-                            gg = 0;
-                        };
-                        if (gg > 255)
-                        {
-                            gg = 255;
-                        };
-                        if (bb < 0)
-                        {
-                            bb = 0;
-                        };
-                        if (bb > 255)
-                        {
-                            bb = 255;
-                        };
+                        rr = Clamp(rr, 0, 255);
+                        gg = Clamp(gg, 0, 255);
+                        bb = Clamp(bb, 0, 255);
                         s[i] = Color.FromArgb(rr, gg, bb);
-                    };
-                };
-            };
+                    }
+                }
+            }
             return s;
         }
 
