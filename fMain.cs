@@ -332,29 +332,6 @@ namespace MMRando
             Manual.Show();
         }
 
-        private void mByteswap_Click(object sender, EventArgs e)
-        {
-            if (openBROM.ShowDialog() == DialogResult.OK)
-            {
-                int r = ROMFuncs.ByteswapROM(openBROM.FileName);
-                switch (r)
-                {
-                    case 0:
-                        MessageBox.Show("Successfully byteswapped ROM.",
-                            "Success", MessageBoxButtons.OK, MessageBoxIcon.None);
-                        break;
-                    case 1:
-                        MessageBox.Show("ROM appears to be big endian.",
-                            "Success", MessageBoxButtons.OK, MessageBoxIcon.None);
-                        break;
-                    default:
-                        MessageBox.Show("Could not byteswap ROM.",
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        break;
-                };
-            };
-        }
-
         private void mLogicEdit_Click(object sender, EventArgs e)
         {
             LogicEditor.Show();
@@ -668,17 +645,24 @@ namespace MMRando
                 return;
             }
 
+            /*temporarily commented out to allow byteswapper, needs to be brought back in once byteswapper is fixed.
+            .z64 files work with this code, but .n64 files done.
+            My two theories are the check here is stopping the .n64 file from being recognized because it's not a
+            .z64 file, or that the .n64 files name is changed in byteswapper.
+            -Spectre (5/10/2019, 1:10am EST)
+             */
             // Additional validation of preconditions
-            if (!ValidateInputFile()) return;
+            /*if (!ValidateInputFile()) return;
 
             if (!ValidateROM(Settings.InputROMFilename))
             {
                 MessageBox.Show("Cannot verify input ROM is Majora's Mask (U).",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }
+            }*/
 
-            MakeROM(Settings.InputROMFilename, Settings.OutputROMFilename, worker);
+            //MakeROM(Settings.InputROMFilename, Settings.OutputROMFilename, worker);
+            ByteSwap(worker);
 
             MessageBox.Show("Successfully built output ROM!",
                 "Success", MessageBoxButtons.OK, MessageBoxIcon.None);
@@ -699,6 +683,24 @@ namespace MMRando
             return true;
         }
 
+        //Byteswapping, by Spectre
+        private void ByteSwap(BackgroundWorker worker)
+        {
+            BinaryReader rom = readROM(tROMName.Text);
+            if (rom is null)
+            {
+                MessageBox.Show("Invalid ROM file");
+                return;
+            }
+            if (saveROM.FileName != "")
+            {
+                MakeRom(rom, saveROM.FileName, worker);
+                //MessageBox.Show("Successfully built output ROM!", "Success", MessageBoxButtons.OK, MessageBoxIcon.None);
+
+            }
+                    
+        }
+
         /// <summary>
         /// Randomizes the ROM with respect to the configured ruleset.
         /// </summary>
@@ -711,15 +713,17 @@ namespace MMRando
                 worker.ReportProgress(5, "Preparing ruleset...");
                 PrepareRulesetItemData();
 
-                worker.ReportProgress(10, "Shuffling items...");
-                ItemShuffle();
-
                 if (Settings.RandomizeDungeonEntrances)
                 {
-                    worker.ReportProgress(30, "Shuffling entrances...");
+                    worker.ReportProgress(10, "Shuffling entrances...");
                     EntranceShuffle();
                 }
 
+
+                worker.ReportProgress(15, "Shuffling items...");
+                ItemShuffle();
+
+               
                 if (Settings.EnableGossipHints)
                 {
                     worker.ReportProgress(35, "Making gossip quotes...");
@@ -741,6 +745,10 @@ namespace MMRando
             //Sort BGM
             SeedRNG();
             SortBGM();
+
+            //Byteswapper, coded by Spectre
+            //worker.ReportProgress(49, "Byteswapping to 8mb memory...");
+            //ByteSwap();
         }
 
         #endregion

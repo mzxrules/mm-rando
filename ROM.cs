@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -75,6 +75,7 @@ namespace MMRando
             return index;
         }
 
+        //Edited by Spectre, using ProbablyButter's code (Lines 79-121)
         public static int ByteswapROM(string filename)
         {
             using (BinaryReader ROM = new BinaryReader(File.Open(filename, FileMode.Open)))
@@ -117,7 +118,7 @@ namespace MMRando
             }
             return -1;
         }
-
+        
         private static void UpdateFileTable(byte[] ROM)
         {
             for (int i = 0; i < MMFileList.Count; i++)
@@ -180,7 +181,8 @@ namespace MMRando
             }
         }
 
-        private static void FixCRC(byte[] ROM)
+        //private static void FixCRC(byte[] ROM) //Commented out by Spectre, using ProbablyButter's code, changing private to public.
+        public static void FixCRC(byte[] ROM)
         {
             // reference: http://n64dev.org/n64crc.html
             uint[] CRC = new uint[2];

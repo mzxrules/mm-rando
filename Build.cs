@@ -1,4 +1,4 @@
-﻿using MMRando.Models;
+using MMRando.Models;
 using MMRando.Utils;
 using System;
 using System.Collections.Generic;
@@ -397,7 +397,72 @@ namespace MMRando
             ROMFuncs.SetStrings(ModsDirectory + "logo-text", $"v{v.Major}.{v.Minor}b", tSString.Text);
         }
 
+        //Added by Spectre, using ProbablyButter's code (Thoughout lines 400 - 491)
+        private BinaryReader readROM(string FileName)
+        {
+           BinaryReader ROM = new BinaryReader(File.Open(FileName, FileMode.Open));
+            // check if this is a .z64 (32-bit big endian), .v64 (16-bit little endian), or .n64 (32-bit big endian) file
+            // v64: 0x37, 0x80, 0x40, 0x12
+            // z64: 0x80, 0x37, 0x12, 0x40
+            // n64: 0x40, 0x12, 0x37, 0x80
+            // assume little endian machine
+            uint header = ROM.ReadUInt32();
+            ROM.BaseStream.Seek(0, 0);
+            if (header == 0x40123780u)
+            {
+                // z64 format
+                // do nothing
+                return ROM;
+            }
+            else if (header == 0x80371240)
+            {
+                // n64 format
+                byte[] data = new byte[ROM.BaseStream.Length];
+                ROM.Read(data, 0, data.Length);
+                ROM.Close();
+                // 32-bit little endian
+                for (int i = 0; i < data.Length; i += 4)
+                {
+                    byte tmp = data[i];
+                    data[i] = data[i + 3];
+                    data[i + 3] = tmp;
+                    tmp = data[i + 1];
+                    data[i + 1] = data[i + 2];
+                    data[i + 2] = tmp;
+                }
+                // technically not necessary to recalculate CRC unless you just want a sanity check
+                //ROMFuncs.FixCRC(data);
+                BinaryReader fixedRom = new BinaryReader(new MemoryStream(data));
+                return fixedRom;
+            }
+            else if (header == 0x12408037)
+            {
+                // v64 format
+                byte[] data = new byte[ROM.BaseStream.Length];
+                ROM.Read(data, 0, data.Length);
+                ROM.Close();
+                // 16-bit little endian
+                for (int i = 0; i < data.Length; i += 2)
+                {
+                    byte tmp = data[i];
+                    data[i] = data[i + 1];
+                    data[i + 1] = tmp;
+                }
+                // technically not necessary to recalculate CRC unless you just want a sanity check
+                //ROMFuncs.FixCRC(data);
+                BinaryReader fixedRom = new BinaryReader(new MemoryStream(data));
+                return fixedRom;
+            }
+            else
+            {
+                // is this even a valid ROM?
+                return null;
+            }
+        }
+       
+
         private bool ValidateROM(string FileName)
+       //private bool ValidateROM(BinaryReader ROM) //Added/Altered by Spectre, using ProbablyButter's Code
         {
             bool res = false;
             using (BinaryReader ROM = new BinaryReader(File.Open(FileName, FileMode.Open, FileAccess.Read)))
@@ -406,16 +471,24 @@ namespace MMRando
                 {
                     res = ROMFuncs.CheckOldCRC(ROM);
                 }
+                ROM.Close(); //Added/Altered by Spectre, using ProbablyButter's Code
             }
             return res;
         }
 
-        private void MakeROM(string InFile, string FileName, BackgroundWorker worker)
+        //private void MakeROM(string InFile, string FileName, BackgroundWorker worker)
+        private void MakeRom(BinaryReader OldROM, string FileName, BackgroundWorker worker) //Added/Altered by Spectre, using ProbablyButter's Code
         {
-            using (BinaryReader OldROM = new BinaryReader(File.Open(InFile, FileMode.Open, FileAccess.Read)))
-            {
+            //using (BinaryReader OldROM = new BinaryReader(File.Open(InFile, FileMode.Open, FileAccess.Read)))
+            //{
+                //ROMFuncs.ReadFileTable(OldROM);
+                OldROM.BaseStream.Seek(0, 0);
                 ROMFuncs.ReadFileTable(OldROM);
-            }
+                OldROM.Close();
+            //}
+         //Commented out by Spectre, using ProbablyButter's code
+             //Added by Spectre, using ProbablyButter's Code (Lines 488 - 491 )
+           
 
             worker.ReportProgress(55, "Writing Audio...");
             WriteAudioSeq();
