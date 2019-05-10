@@ -1,0 +1,1 @@
+﻿When running the program, a base rom named mmu10.z64 will be added here

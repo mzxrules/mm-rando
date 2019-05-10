@@ -74,50 +74,6 @@ namespace MMRando
             CheckCompressed(index);
             return index;
         }
-
-        //Edited by Spectre, using ProbablyButter's code (Lines 79-121)
-        public static int ByteswapROM(string filename)
-        {
-            using (BinaryReader ROM = new BinaryReader(File.Open(filename, FileMode.Open)))
-            {
-                if (ROM.BaseStream.Length % 4 != 0)
-                {
-                    return -1;
-                }
-
-                byte[] buffer = new byte[4];
-                ROM.Read(buffer, 0, 4);
-                // very hacky
-                ROM.BaseStream.Seek(0, 0);
-                if (buffer[0] == 0x80)
-                {
-                    return 1;
-                }
-                else if (buffer[1] == 0x80)
-                {
-                    using (BinaryWriter newROM = new BinaryWriter(File.Open(filename + ".z64", FileMode.Create)))
-                    {
-                        while (ROM.BaseStream.Position < ROM.BaseStream.Length)
-                        {
-                            newROM.Write(Byteswap16(ReadU16(ROM)));
-                        }
-                    }
-                    return 0;
-                }
-                else if (buffer[3] == 0x80)
-                {
-                    using (BinaryWriter newROM = new BinaryWriter(File.Open(filename + ".z64", FileMode.Create)))
-                    {
-                        while (ROM.BaseStream.Position < ROM.BaseStream.Length)
-                        {
-                            newROM.Write(Byteswap32(ReadU32(ROM)));
-                        }
-                    }
-                    return 0;
-                }
-            }
-            return -1;
-        }
         
         private static void UpdateFileTable(byte[] ROM)
         {
@@ -181,7 +137,6 @@ namespace MMRando
             }
         }
 
-        //private static void FixCRC(byte[] ROM) //Commented out by Spectre, using ProbablyButter's code, changing private to public.
         public static void FixCRC(byte[] ROM)
         {
             // reference: http://n64dev.org/n64crc.html

@@ -24,11 +24,12 @@ namespace MMRando
         public fItemEdit ItemEditor = new fItemEdit();
 
         public static string MainDirectory = Application.StartupPath;
-        public static string MusicDirectory = Application.StartupPath + @"\music\";
-        public static string ModsDirectory = Application.StartupPath + @"\mods\";
-        public static string AddrsDirectory = Application.StartupPath + @"\addresses\";
-        public static string ObjsDirectory = Application.StartupPath + @"\obj\";
-        public static string VCDirectory = Application.StartupPath + @"\vc\";
+        public static string MusicDirectory = Path.Combine(Application.StartupPath, @"\music\");
+        public static string ModsDirectory = Path.Combine(Application.StartupPath, @"\mods\");
+        public static string AddrsDirectory = Path.Combine(Application.StartupPath, @"\addresses\");
+        public static string ObjsDirectory = Path.Combine(Application.StartupPath, @"\obj\");
+        public static string VCDirectory = Path.Combine(Application.StartupPath, @"\vc\");
+        public static string BaseRomDirectory = Path.Combine(Application.StartupPath, "roms", "base.z64");
 
         public string AssemblyVersion
         {
@@ -54,6 +55,7 @@ namespace MMRando
 
             InitializeSettings();
             InitializeBackgroundWorker();
+            InitializeSelectedRom();
 
             _isUpdating = false;
         }
@@ -99,16 +101,50 @@ namespace MMRando
 
         private void bopen_Click(object sender, EventArgs e)
         {
-            openROM.ShowDialog();
+            var result = openROM.ShowDialog();
 
-            Settings.InputROMFilename = openROM.FileName;
-            tROMName.Text = Settings.InputROMFilename;
+            if (result == DialogResult.OK)
+            {
+                var validateResult = ValidateRom(openROM.FileName);
+
+                if (validateResult == ValidateRomResult.NoFile)
+                {
+                    MessageBox.Show("Input file does not exist",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                else if (validateResult == ValidateRomResult.InvalidFile)
+                {
+                    MessageBox.Show("Input file is not a valid base ROM",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                else if (TryCopyToBaseRomLocation(openROM.FileName, validateResult))
+                {
+                    Settings.InputROMFilename = BaseRomDirectory;
+                    tROMName.Text = Settings.InputROMFilename;
+                }
+            }
         }
 
         private void bRandomise_Click(object sender, EventArgs e)
         {
-            if (!ValidateInputFile()) return;
-            
+            var validateResult = ValidateRom(Settings.InputROMFilename);
+
+            if (validateResult == ValidateRomResult.NoFile)
+            {
+                MessageBox.Show("Input file does not exist",
+                    "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            else if (validateResult != ValidateRomResult.ValidFile)
+            {
+                MessageBox.Show("Input file is not a valid base ROM",
+                    "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+
             saveROM.FileName = Settings.DefaultOutputROMFilename;
             if ((_outputROM || _outputVC) && saveROM.ShowDialog() != DialogResult.OK)
             {
@@ -621,6 +657,72 @@ namespace MMRando
             UpdateOutputFilenames(settings);
         }
 
+        private void InitializeSelectedRom()
+        {
+            if(ValidateRom(BaseRomDirectory) == ValidateRomResult.ValidFile)
+            {
+                Settings.InputROMFilename = BaseRomDirectory;
+                tROMName.Text = Settings.InputROMFilename;
+            }
+        }
+
+        private bool TryCopyToBaseRomLocation(string file, ValidateRomResult validateResult)
+        {
+            if(validateResult == ValidateRomResult.ValidFile)
+            {
+                try
+                {
+                    if (File.Exists(BaseRomDirectory))
+                    {
+                        File.SetAttributes(BaseRomDirectory, FileAttributes.Normal);
+                    }
+                    File.Copy(file, BaseRomDirectory, true);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    return false;
+                }
+            }
+            else if (validateResult == ValidateRomResult.Swap32 || validateResult == ValidateRomResult.Swap16)
+            {
+                byte[] data = new byte[0x2000000];
+                using (BinaryReader br = new BinaryReader(File.OpenRead(file)))
+                {
+                    br.Read(data, 0, data.Length);
+                }
+                if (validateResult == ValidateRomResult.Swap32)
+                {
+                    // 32-bit little endian
+                    for (int i = 0; i < data.Length; i += 4)
+                    {
+                        byte tmp = data[i];
+                        data[i] = data[i + 3];
+                        data[i + 3] = tmp;
+                        tmp = data[i + 1];
+                        data[i + 1] = data[i + 2];
+                        data[i + 2] = tmp;
+                    }
+                }
+                else
+                {
+                    // 16-bit little endian
+                    for (int i = 0; i < data.Length; i += 2)
+                    {
+                        byte tmp = data[i];
+                        data[i] = data[i + 1];
+                        data[i + 1] = tmp;
+                    }
+                }
+                using (BinaryWriter br = new BinaryWriter(File.Create(BaseRomDirectory)))
+                {
+                    br.Write(data);
+                }
+            }
+            return false;
+        }
+
         #endregion
 
         #region Randomization
@@ -645,60 +747,50 @@ namespace MMRando
                 return;
             }
 
-            /*temporarily commented out to allow byteswapper, needs to be brought back in once byteswapper is fixed.
-            .z64 files work with this code, but .n64 files done.
-            My two theories are the check here is stopping the .n64 file from being recognized because it's not a
-            .z64 file, or that the .n64 files name is changed in byteswapper.
-            -Spectre (5/10/2019, 1:10am EST)
-             */
-            // Additional validation of preconditions
-            /*if (!ValidateInputFile()) return;
-
-            if (!ValidateROM(Settings.InputROMFilename))
-            {
-                MessageBox.Show("Cannot verify input ROM is Majora's Mask (U).",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }*/
-
-            //MakeROM(Settings.InputROMFilename, Settings.OutputROMFilename, worker);
-            ByteSwap(worker);
+            MakeRom(Settings.InputROMFilename, saveROM.FileName, worker);
 
             MessageBox.Show("Successfully built output ROM!",
                 "Success", MessageBoxButtons.OK, MessageBoxIcon.None);
         }
 
-        /// <summary>
-        /// Checks that the input file exists
-        /// </summary>
-        /// <returns></returns>
-        private bool ValidateInputFile()
+
+        enum ValidateRomResult
         {
-            if (!File.Exists(Settings.InputROMFilename))
-            {
-                MessageBox.Show("Input ROM not selected or doesn't exist, cannot generate output.",
-                    "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-            return true;
+            NoFile,
+            ValidFile,
+            InvalidFile,
+            Swap32,
+            Swap16
         }
-
-        //Byteswapping, by Spectre
-        private void ByteSwap(BackgroundWorker worker)
+        private ValidateRomResult ValidateRom(string filename)
         {
-            BinaryReader rom = readROM(tROMName.Text);
-            if (rom is null)
+            if (!File.Exists(filename))
             {
-                MessageBox.Show("Invalid ROM file");
-                return;
+                return ValidateRomResult.NoFile;
             }
-            if (saveROM.FileName != "")
-            {
-                MakeRom(rom, saveROM.FileName, worker);
-                //MessageBox.Show("Successfully built output ROM!", "Success", MessageBoxButtons.OK, MessageBoxIcon.None);
 
+            using (BinaryReader rom = new BinaryReader(File.Open(filename, FileMode.Open, FileAccess.Read)))
+            {
+                if (rom.BaseStream.Length != 0x2000000)
+                {
+                    return ValidateRomResult.InvalidFile;
+                }
+                uint header = rom.ReadUInt32(); //TODO: add BinaryReader extensions that allow big endian reads
+                switch (header)
+                {
+                    case 0x40123780:
+                        if (ROMFuncs.CheckOldCRC(rom))
+                            return ValidateRomResult.ValidFile;
+                        else
+                            return ValidateRomResult.InvalidFile;
+                    case 0x80371240:
+                        return ValidateRomResult.Swap32;
+                    case 0x12408037:
+                        return ValidateRomResult.Swap16;
+                    default:
+                        return ValidateRomResult.InvalidFile;
+                }
             }
-                    
         }
 
         /// <summary>
@@ -745,10 +837,6 @@ namespace MMRando
             //Sort BGM
             SeedRNG();
             SortBGM();
-
-            //Byteswapper, coded by Spectre
-            //worker.ReportProgress(49, "Byteswapping to 8mb memory...");
-            //ByteSwap();
         }
 
         #endregion

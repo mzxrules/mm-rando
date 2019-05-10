@@ -750,6 +750,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="200px_majoramask_rtw_icon.ico" />
+    <Content Include="roms\Readme.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\ITEM_INDICES.txt" />
     <None Include="Resources\ENEMIES.txt" />
     <None Include="Resources\GOSSIP.txt" />
