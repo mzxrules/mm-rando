@@ -668,59 +668,43 @@ namespace MMRando
 
         private bool TryCopyToBaseRomLocation(string file, ValidateRomResult validateResult)
         {
-            if(validateResult == ValidateRomResult.ValidFile)
+            try
             {
-                try
-                {
-                    if (File.Exists(BaseRomDirectory))
-                    {
-                        File.SetAttributes(BaseRomDirectory, FileAttributes.Normal);
-                    }
-                    File.Copy(file, BaseRomDirectory, true);
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message);
-                    return false;
-                }
+                File.WriteAllBytes(
+                    BaseRomDirectory,
+                    SwapByteOrder(
+                        File.ReadAllBytes(file),
+                        validateResult == ValidateRomResult.Swap32 ? 4 :
+                        validateResult == ValidateRomResult.Swap16 ? 2 : 1)
+                        );
+                return true;
             }
-            else if (validateResult == ValidateRomResult.Swap32 || validateResult == ValidateRomResult.Swap16)
+            catch(Exception e)
             {
-                byte[] data = new byte[0x2000000];
-                using (BinaryReader br = new BinaryReader(File.OpenRead(file)))
-                {
-                    br.Read(data, 0, data.Length);
-                }
-                if (validateResult == ValidateRomResult.Swap32)
-                {
-                    // 32-bit little endian
-                    for (int i = 0; i < data.Length; i += 4)
-                    {
-                        byte tmp = data[i];
-                        data[i] = data[i + 3];
-                        data[i + 3] = tmp;
-                        tmp = data[i + 1];
-                        data[i + 1] = data[i + 2];
-                        data[i + 2] = tmp;
-                    }
-                }
-                else
-                {
-                    // 16-bit little endian
-                    for (int i = 0; i < data.Length; i += 2)
-                    {
-                        byte tmp = data[i];
-                        data[i] = data[i + 1];
-                        data[i + 1] = tmp;
-                    }
-                }
-                using (BinaryWriter br = new BinaryWriter(File.Create(BaseRomDirectory)))
-                {
-                    br.Write(data);
-                }
+                MessageBox.Show(e.Message);
+                return false;
             }
-            return false;
+        }
+
+        /// <summary>
+        /// Swaps the byte ordering of a file
+        /// </summary>
+        /// <param name="input">The input byte array</param>
+        /// <param name="flipsize">Must be a positive power of 2</param>
+        /// <returns></returns>
+        static byte[] SwapByteOrder(byte[] input, int flipsize)
+        {
+            int xor = flipsize - 1;
+            if (xor == 0)
+                return input;
+
+            byte[] output = new byte[input.Length];
+
+            for (var i = 0; i < input.Length; i++)
+            {
+                output[i] = input[i ^ xor];
+            }
+            return output;
         }
 
         #endregion
