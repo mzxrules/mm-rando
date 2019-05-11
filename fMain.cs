@@ -736,16 +736,6 @@ namespace MMRando
             MessageBox.Show("Successfully built output ROM!",
                 "Success", MessageBoxButtons.OK, MessageBoxIcon.None);
         }
-
-
-        enum ValidateRomResult
-        {
-            NoFile,
-            ValidFile,
-            InvalidFile,
-            Swap32,
-            Swap16
-        }
         private ValidateRomResult ValidateRom(string filename)
         {
             if (!File.Exists(filename))
