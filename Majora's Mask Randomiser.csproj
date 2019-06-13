@@ -87,6 +87,7 @@
     <Compile Include="Models\Rom\MMSequence.cs" />
     <Compile Include="Models\Rom\Scene.cs" />
     <Compile Include="Models\Rom\SequenceInfo.cs" />
+    <Compile Include="Models\ValidateRomResult.cs" />
     <Compile Include="Models\Vectors\vecf32.cs" />
     <Compile Include="Models\Vectors\vec16.cs" />
     <Compile Include="Utils\Base36Utils.cs" />
@@ -207,6 +208,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Content Include="Output\.gitkeep">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\addresses\d-check">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
