@@ -185,12 +185,22 @@ namespace MMRando
 
         private void bopen_Click(object sender, EventArgs e)
         {
-            openROM.ShowDialog();
+            var result = openROM.ShowDialog();
 
-            RomUtils.ValidateROM(openROM.FileName);
+            if (result == DialogResult.OK)
+            {
+                var validate = RomUtils.ValidateROM(openROM.FileName);
 
-            _settings.InputROMFilename = openROM.FileName;
-            tROMName.Text = _settings.InputROMFilename;
+                if (validate == ValidateRomResult.InvalidFile)
+                {
+                    MessageBox.Show("Input file is not a clean Majora's Mask (U).",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                _settings.InputROMFilename = openROM.FileName;
+                tROMName.Text = _settings.InputROMFilename;
+            }
         }
 
 

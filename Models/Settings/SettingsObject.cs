@@ -86,7 +86,7 @@ namespace MMRando.Models.Settings
         /// <summary>
         /// Checks if the InputROM is needed for generation
         /// </summary>
-        public bool NeedInputROM { get { return ApplyPatch | OutputN64ROM | OutputVC | GeneratePatch; } }
+        public bool NeedInputROM => ApplyPatch | OutputN64ROM | OutputVC | GeneratePatch;
 
         /// <summary>
         /// Stores the byte order of the rom
