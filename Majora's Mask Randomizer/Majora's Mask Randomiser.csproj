@@ -209,7 +209,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Content Include=".gitattributes" />
-    <Content Include=".gitignore" />
     <Content Include="Output\.gitkeep">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
