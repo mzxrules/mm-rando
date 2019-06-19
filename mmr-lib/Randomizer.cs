@@ -449,11 +449,11 @@ namespace MMRando
 
             if (mode == LogicMode.Casual)
             {
-                lines = Properties.Resources.REQ_CASUAL.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                lines = Resources.GetTextFile("REQ_CASUAL.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             }
             else if (mode == LogicMode.Glitched)
             {
-                lines = Properties.Resources.REQ_GLITCH.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                lines = Resources.GetTextFile("REQ_GLITCH.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             }
             else if (mode == LogicMode.UserLogic)
             {

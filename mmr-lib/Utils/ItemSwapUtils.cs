@@ -29,7 +29,7 @@ namespace MMRando.Utils
         {
             RomData.GetItemIndices = new List<int>();
             RomData.BottleIndices = new List<int[]>();
-            string[] lines = Properties.Resources.ITEM_INDICES.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            string[] lines = Resources.GetTextFile("ITEM_INDICES.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             bool bottle = false;
             foreach (var line in lines)
             {

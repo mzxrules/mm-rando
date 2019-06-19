@@ -17,7 +17,7 @@ namespace MMRando.Utils
             RomData.SequenceList = new List<SequenceInfo>();
             RomData.TargetSequences = new List<SequenceInfo>();
 
-            string[] lines = Properties.Resources.SEQS
+            string[] lines = Resources.GetTextFile("SEQS.txt")
                 .Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
             int i = 0;

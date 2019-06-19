@@ -19,7 +19,7 @@ namespace MMRando
         public static void ReadEnemyList()
         {
             EnemyList = new List<Enemy>();
-            string[] lines = Properties.Resources.ENEMIES.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            string[] lines = Resources.GetTextFile("ENEMIES.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             int i = 0;
             while (i < lines.Length)
             {

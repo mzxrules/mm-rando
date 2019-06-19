@@ -71,7 +71,7 @@ namespace MMRando.Utils
         {
             var gossipList = new List<Gossip>();
 
-            string[] gossipLines = Properties.Resources.GOSSIP
+            string[] gossipLines = Resources.GetTextFile("GOSSIP.txt")
                 .Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
             for (int i = 0; i < gossipLines.Length; i += 2)

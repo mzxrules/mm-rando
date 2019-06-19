@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MMRando.Templates
 {
-    partial class HtmlSpoiler
+    internal partial class HtmlSpoiler
     {
         private Spoiler spoiler;
 
@@ -14,5 +14,6 @@ namespace MMRando.Templates
         {
             this.spoiler = spoiler;
         }
+
     }
 }

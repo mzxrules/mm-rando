@@ -21,7 +21,7 @@ namespace MMRando.Utils
 
             Spoiler spoiler = new Spoiler()
             {
-                Version = MainForm.AssemblyVersion.Substring(26),
+                Version = "core_version", //MainForm.AssemblyVersion.Substring(26),
                 SettingsString = settingsString,
                 Seed = settings.Seed,
                 RandomizeDungeonEntrances = settings.RandomizeDungeonEntrances,

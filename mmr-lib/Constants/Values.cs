@@ -1,17 +1,15 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows.Forms;
+using System.IO;
 
 namespace MMRando.Constants
 {
     public static class Values
     {
-
-        public static string MainDirectory = Application.StartupPath;
-        public static string MusicDirectory = MainDirectory + @"\Resources\music\";
-        public static string ModsDirectory = MainDirectory + @"\Resources\mods\";
-        public static string AddrsDirectory = MainDirectory + @"\Resources\addresses\";
-        public static string ObjsDirectory = MainDirectory + @"\Resources\models\";
-        public static string VCDirectory = MainDirectory + @"\vc\";
+        public static string MusicDirectory = @"Resources\music\";
+        public static string ModsDirectory = @"Resources\mods\";
+        public static string AddrsDirectory = @"Resources\addresses\";
+        public static string ObjsDirectory = @"Resources\models\";
+        public static string VCDirectory = @"vc\";
 
         public const byte VanillaClockSpeed = 3;
 
