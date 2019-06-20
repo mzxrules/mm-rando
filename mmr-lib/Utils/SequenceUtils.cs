@@ -1,78 +1,70 @@
 ﻿using MMRando.Constants;
-using MMRando.Models;
 using MMRando.Models.Rom;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using Newtonsoft.Json;
 
 namespace MMRando.Utils
 {
     public class SequenceUtils
     {
+        const int AUDIO_SEQ_TABLE = 0xC77B80;
+        const int INSTRUMENT_SET_MAP = 0xC77A60;
 
         public static void ReadSequenceInfo()
         {
-            RomData.SequenceList = new List<SequenceInfo>();
-            RomData.TargetSequences = new List<SequenceInfo>();
+            var sequenceList = new List<SequenceInfo>();
+            var targetSequences = new List<SequenceInfo>();
 
-            string[] lines = Resources.GetTextFile("SEQS.txt")
-                .Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            var json = Resources.GetTextFile("sequences.json");
+            List<SequenceInfo> sequences = JsonConvert.DeserializeObject<List<SequenceInfo>>(json);
 
-            int i = 0;
-            while (i < lines.Length)
+            foreach(var item in sequences)
             {
-                var sourceName = lines[i];
-                var sourceType = Array.ConvertAll(lines[i + 1].Split(','), int.Parse).ToList();
-                var sourceInstrument = Convert.ToInt32(lines[i + 2], 16);
-
-                var targetName = lines[i];
-                var targetType = Array.ConvertAll(lines[i + 1].Split(','), int.Parse).ToList();
-                var targetInstrument = Convert.ToInt32(lines[i + 2], 16);
-
                 SequenceInfo sourceSequence = new SequenceInfo
                 {
-                    Name = sourceName,
-                    Type = sourceType,
-                    Instrument = sourceInstrument
+                    Name = item.Name,
+                    Type = item.Type,
+                    Instrument = item.Instrument,
+                    Replaceable = item.Replaceable
                 };
 
                 SequenceInfo targetSequence = new SequenceInfo
                 {
-                    Name = targetName,
-                    Type = targetType,
-                    Instrument = targetInstrument
+                    Name = item.Name,
+                    Type = item.Type,
+                    Instrument = item.Instrument
                 };
 
-                if (sourceSequence.Name.StartsWith("mm-"))
+                if (item.Replaceable)
                 {
-                    targetSequence.Replaces = Convert.ToInt32(lines[i + 3], 16);
-                    sourceSequence.MM_seq = Convert.ToInt32(lines[i + 3], 16);
-                    RomData.TargetSequences.Add(targetSequence);
-                    i += 4;
+                    sourceSequence.SequenceId = item.SequenceId;
+                    targetSequence.Replaces = item.SequenceId;
+                    targetSequences.Add(targetSequence);
                 }
-                else
-                {
-                    if (sourceSequence.Name == "mmr-f-sot")
-                    {
-                        sourceSequence.Replaces = 0x33;
-                    };
 
-                    i += 3;
-                };
-
-                if (sourceSequence.MM_seq != 0x18)
+                if (sourceSequence.Name == "mmr-f-sot")
                 {
-                    RomData.SequenceList.Add(sourceSequence);
-                };
-            };
+                    sourceSequence.Replaces = 0x33;
+                }
+
+                if (sourceSequence.SequenceId != 0x18) //Fairy Fountain Song, File Select
+                {
+                    sequenceList.Add(sourceSequence);
+                }
+            }
+
+            RomData.SequenceList = sequenceList;
+            RomData.TargetSequences = targetSequences;
         }
+
 
         public static void RebuildAudioSeq(List<SequenceInfo> SequenceList)
         {
             List<MMSequence> OldSeq = new List<MMSequence>();
-            int f = RomUtils.GetFileIndexForWriting(Addresses.SeqTable);
+            int f = RomUtils.GetFileIndexForWriting(AUDIO_SEQ_TABLE);
             int basea = RomData.MMFileList[f].Addr;
 
             for (int i = 0; i < 128; i++)
@@ -86,7 +78,7 @@ namespace MMRando.Utils
                     continue;
                 }
 
-                int entryaddr = Addresses.SeqTable + (i * 16);
+                int entryaddr = AUDIO_SEQ_TABLE + (i * 16);
                 entry.Addr = (int)ReadWriteUtils.Arr_ReadU32(RomData.MMFileList[f].Data, entryaddr - basea);
                 entry.Size = (int)ReadWriteUtils.Arr_ReadU32(RomData.MMFileList[f].Data, (entryaddr - basea) + 4);
                 if (entry.Size > 0)
@@ -134,10 +126,10 @@ namespace MMRando.Utils
                 int j = SequenceList.FindIndex(u => u.Replaces == i);
                 if (j != -1)
                 {
-                    if (SequenceList[j].MM_seq != -1)
+                    if (SequenceList[j].SequenceId != -1)
                     {
-                        newentry.Size = OldSeq[SequenceList[j].MM_seq].Size;
-                        newentry.Data = OldSeq[SequenceList[j].MM_seq].Data;
+                        newentry.Size = OldSeq[SequenceList[j].SequenceId].Size;
+                        newentry.Data = OldSeq[SequenceList[j].SequenceId].Data;
                     }
                     else
                     {
@@ -190,19 +182,19 @@ namespace MMRando.Utils
             }
 
             //update pointer table
-            f = RomUtils.GetFileIndexForWriting(Addresses.SeqTable);
+            f = RomUtils.GetFileIndexForWriting(AUDIO_SEQ_TABLE);
             for (int i = 0; i < 128; i++)
             {
-                ReadWriteUtils.Arr_WriteU32(RomData.MMFileList[f].Data, (Addresses.SeqTable + (i * 16)) - basea, (uint)NewSeq[i].Addr);
-                ReadWriteUtils.Arr_WriteU32(RomData.MMFileList[f].Data, 4 + (Addresses.SeqTable + (i * 16)) - basea, (uint)NewSeq[i].Size);
+                ReadWriteUtils.Arr_WriteU32(RomData.MMFileList[f].Data, (AUDIO_SEQ_TABLE + (i * 16)) - basea, (uint)NewSeq[i].Addr);
+                ReadWriteUtils.Arr_WriteU32(RomData.MMFileList[f].Data, 4 + (AUDIO_SEQ_TABLE + (i * 16)) - basea, (uint)NewSeq[i].Size);
             }
 
             //update inst sets
-            f = RomUtils.GetFileIndexForWriting(Addresses.InstSetMap);
+            f = RomUtils.GetFileIndexForWriting(INSTRUMENT_SET_MAP);
             basea = RomData.MMFileList[f].Addr;
             for (int i = 0; i < 128; i++)
             {
-                int paddr = (Addresses.InstSetMap - basea) + (i * 2) + 2;
+                int paddr = (INSTRUMENT_SET_MAP - basea) + (i * 2) + 2;
                 int j = -1;
 
                 if (NewSeq[i].Size == 0)
