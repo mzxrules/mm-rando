@@ -1,15 +1,13 @@
-﻿
-using MMRando.Constants;
-using MMRando.Utils;
+﻿using MMRando.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace MMRando.Models.Settings
+namespace MMRando.Models
 {
 
-    public class SettingsObject
+    public class Settings
     {
         #region General settings
 
@@ -45,7 +43,7 @@ namespace MMRando.Models.Settings
         {
             get
             {
-                string settings = this.ToString();
+                string settings = ToString();
                 string appendSeed = GenerateSpoilerLog ? $"{Seed}_" : "";
                 string filename = $"MMR_{appendSeed}{settings}";
 
@@ -359,19 +357,19 @@ namespace MMRando.Models.Settings
             if (ShortenCutscenes) { parts[0] += 2; };
             if (QuickTextEnabled) { parts[0] += 1; };
 
-            parts[1] = ((byte)LogicMode << 16)
-                | ((byte)Character << 8)
-                | ((byte)TatlColorSchema)
-                | ((byte)DamageEffect << 24)
-                    | ((byte)DamageMode << 28);
+            parts[1] = (byte)LogicMode << 16
+                | (byte)Character << 8
+                | (byte)TatlColorSchema
+                | (byte)DamageEffect << 24
+                    | (byte)DamageMode << 28;
 
-            parts[2] = (TunicColor.R << 16)
-                | (TunicColor.G << 8)
-                | (TunicColor.B)
-                | ((byte)FloorType << 24)
-                    | ((byte)MovementMode << 28);
+            parts[2] = TunicColor.R << 16
+                | TunicColor.G << 8
+                | TunicColor.B
+                | (byte)FloorType << 24
+                    | (byte)MovementMode << 28;
 
-            parts[3] = (byte) ClockSpeed;
+            parts[3] = (byte)ClockSpeed;
 
             return parts;
         }

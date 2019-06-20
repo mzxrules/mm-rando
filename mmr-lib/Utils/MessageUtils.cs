@@ -1,7 +1,6 @@
 ﻿using MMRando.Extensions;
 using MMRando.Models;
 using MMRando.Models.Rom;
-using MMRando.Models.Settings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -98,7 +97,7 @@ namespace MMRando.Utils
                 message.Contains("Heart");
         }
 
-        public static List<MessageEntry> MakeGossipQuotes(SettingsObject settings, List<ItemObject> items, Random random)
+        public static List<MessageEntry> MakeGossipQuotes(Settings settings, List<ItemObject> items, Random random)
         {
             if (!settings.EnableGossipHints)
                 return new List<MessageEntry>();

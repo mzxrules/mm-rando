@@ -1,5 +1,4 @@
 ﻿using MMRando.Models;
-using MMRando.Models.Settings;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,7 +7,7 @@ namespace MMRando.Utils
 {
     public static class SpoilerUtils
     {
-        public static void CreateSpoilerLog(RandomizedResult randomized, SettingsObject settings)
+        public static void CreateSpoilerLog(RandomizedResult randomized, Settings settings)
         {
             var itemList = randomized.ItemList
                 .Where(u => u.ReplacesAnotherItem)

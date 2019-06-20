@@ -2,7 +2,6 @@ using MMRando.Constants;
 using MMRando.LogicMigrator;
 using MMRando.Models;
 using MMRando.Models.Rom;
-using MMRando.Models.Settings;
 using MMRando.Utils;
 using System;
 using System.Collections.Generic;
@@ -115,10 +114,10 @@ namespace MMRando
 
         #endregion
 
-        private SettingsObject _settings;
+        private Settings _settings;
         private RandomizedResult _randomized;
 
-        public Randomizer(SettingsObject settings)
+        public Randomizer(Settings settings)
         {
             _settings = settings;
         }

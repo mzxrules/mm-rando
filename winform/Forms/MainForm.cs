@@ -1,7 +1,6 @@
 ﻿using MMRando.Forms;
 using MMRando.Forms.Tooltips;
 using MMRando.Models;
-using MMRando.Models.Settings;
 using MMRando.Utils;
 using System;
 using System.ComponentModel;
@@ -18,7 +17,7 @@ namespace MMRando
         private string _oldSettingsString = "";
         private int _seedOld = 0;
 
-        public SettingsObject _settings { get; set; }
+        public Settings _settings { get; set; }
 
         public AboutForm About { get; private set; }
         public ManualForm Manual { get; private set; }
@@ -747,7 +746,7 @@ namespace MMRando
 
         public void InitializeSettings()
         {
-            _settings = new SettingsObject();
+            _settings = new Settings();
 
             cDMult.SelectedIndex = 0;
             cDType.SelectedIndex = 0;

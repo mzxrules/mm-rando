@@ -1,7 +1,6 @@
 ﻿using MMRando.Constants;
 using MMRando.Models;
 using MMRando.Models.Rom;
-using MMRando.Models.Settings;
 using MMRando.Utils;
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,7 @@ namespace MMRando
     public class Builder
     {
         private RandomizedResult _randomized;
-        private SettingsObject _settings;
+        private Settings _settings;
         private MessageTable _messageTable;
 
         public Builder(RandomizedResult randomized)
