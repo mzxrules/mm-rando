@@ -214,68 +214,78 @@ namespace MMRando
 
         #region Sequences and BGM
 
-        private void BGMShuffle()
+        private void ShuffleBGM()
         {
-            while (RomData.TargetSequences.Count > 0)
-            {
-                List<SequenceInfo> Unassigned = RomData.SequenceList.FindAll(u => u.Replaces == -1);
+            var sequences = SequenceUtils.ReadSequenceInfo();
 
-                int targetIndex = Random.Next(RomData.TargetSequences.Count);
-                var targetSequence = RomData.TargetSequences[targetIndex];
+            var targetSequences = new List<SequenceInfo>();
+
+            foreach (var item in sequences.Where(x => x.Replaceable))
+            {
+                SequenceInfo targetSequence = new SequenceInfo
+                {
+                    Name = item.Name,
+                    Type = item.Type,
+                    Instrument = item.Instrument,
+                    Replaces = item.SequenceId
+                };
+
+                targetSequences.Add(targetSequence);
+            }
+
+            sequences.RemoveAll(x => x.SequenceId == 0x18); //File Select, which is a duplicated entry
+
+            while (targetSequences.Count > 0)
+            {
+                List<SequenceInfo> Unassigned = sequences.FindAll(u => u.Replaces == -1);
+
+                int targetIndex = Random.Next(targetSequences.Count);
+                var targetSequence = targetSequences[targetIndex];
 
                 while (true)
                 {
                     int unassignedIndex = Random.Next(Unassigned.Count);
+                    var nextSequence = Unassigned[unassignedIndex];
 
-                    if (Unassigned[unassignedIndex].Name.StartsWith("mm")
+                    if (nextSequence.Name.StartsWith("mm")
                         & (Random.Next(100) < 50))
                     {
                         continue;
                     }
 
-                    for (int i = 0; i < Unassigned[unassignedIndex].Type.Count; i++)
+                    for (int i = 0; i < nextSequence.Type.Count; i++)
                     {
-                        if (targetSequence.Type.Contains(Unassigned[unassignedIndex].Type[i]))
+                        if (targetSequence.Type.Contains(nextSequence.Type[i]))
                         {
-                            Unassigned[unassignedIndex].Replaces = targetSequence.Replaces;
-                            Debug.WriteLine(Unassigned[unassignedIndex].Name + " -> " + targetSequence.Name);
-                            RomData.TargetSequences.RemoveAt(targetIndex);
+                            nextSequence.Replaces = targetSequence.Replaces;
+                            Debug.WriteLine(nextSequence.Name + " -> " + targetSequence.Name);
+                            targetSequences.RemoveAt(targetIndex);
                             break;
                         }
-                        else if (i + 1 == Unassigned[unassignedIndex].Type.Count)
+                        else if (i + 1 == nextSequence.Type.Count)
                         {
                             if ((Random.Next(30) == 0)
-                                && ((Unassigned[unassignedIndex].Type[0] & 8) == (targetSequence.Type[0] & 8))
-                                && (Unassigned[unassignedIndex].Type.Contains(10) == targetSequence.Type.Contains(10))
-                                && (!Unassigned[unassignedIndex].Type.Contains(16)))
+                                && ((nextSequence.Type[0] & 8) == (targetSequence.Type[0] & 8))
+                                && (nextSequence.Type.Contains(10) == targetSequence.Type.Contains(10))
+                                && (!nextSequence.Type.Contains(16)))
                             {
-                                Unassigned[unassignedIndex].Replaces = targetSequence.Replaces;
-                                Debug.WriteLine(Unassigned[unassignedIndex].Name + " -> " + targetSequence.Name);
-                                RomData.TargetSequences.RemoveAt(targetIndex);
+                                nextSequence.Replaces = targetSequence.Replaces;
+                                Debug.WriteLine(nextSequence.Name + " -> " + targetSequence.Name);
+                                targetSequences.RemoveAt(targetIndex);
                                 break;
                             }
                         }
                     }
 
-                    if (Unassigned[unassignedIndex].Replaces != -1)
+                    if (nextSequence.Replaces != -1)
                     {
                         break;
                     }
                 }
             }
 
-            RomData.SequenceList.RemoveAll(u => u.Replaces == -1);
-        }
-
-        private void SortBGM()
-        {
-            if (!_settings.RandomizeBGM)
-            {
-                return;
-            }
-
-            SequenceUtils.ReadSequenceInfo();
-            BGMShuffle();
+            sequences.RemoveAll(u => u.Replaces == -1);
+            _randomized.Sequences = sequences;
         }
 
         #endregion
@@ -1472,11 +1482,14 @@ namespace MMRando
             SeedRNG();
             SetTatlColour();
 
-            worker.ReportProgress(45, "Randomizing Music...");
+            //Shuffle BGM
+            if (_settings.RandomizeBGM)
+            {
+                worker.ReportProgress(45, "Randomizing Music...");
 
-            //Sort BGM
-            SeedRNG();
-            SortBGM();
+                SeedRNG();
+                ShuffleBGM();
+            }
 
             return _randomized;
         }

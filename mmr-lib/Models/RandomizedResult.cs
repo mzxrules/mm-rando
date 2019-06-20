@@ -13,6 +13,8 @@ namespace MMRando.Models
         public List<MessageEntry> GossipQuotes { get; set; }
         public List<ItemLogic> Logic { get; set; }
 
+        public List<SequenceInfo> Sequences { get; set; }
+
         public int[] NewEntrances = new int[] { -1, -1, -1, -1 };
         public int[] NewExits = new int[] { -1, -1, -1, -1 };
 

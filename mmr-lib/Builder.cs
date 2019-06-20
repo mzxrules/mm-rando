@@ -34,14 +34,14 @@ namespace MMRando
                 return;
             }
 
-            foreach (SequenceInfo s in RomData.SequenceList)
+            foreach (SequenceInfo s in _randomized.Sequences)
             {
                 s.Name = Values.MusicDirectory + s.Name;
             }
 
             ResourceUtils.ApplyHack(Values.ModsDirectory + "fix-music");
             ResourceUtils.ApplyHack(Values.ModsDirectory + "inst24-swap-guitar");
-            SequenceUtils.RebuildAudioSeq(RomData.SequenceList);
+            SequenceUtils.RebuildAudioSeq(_randomized.Sequences);
         }
 
         private void WriteMuteMusic()
