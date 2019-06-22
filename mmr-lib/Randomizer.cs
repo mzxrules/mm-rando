@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace MMRando
@@ -448,7 +449,27 @@ namespace MMRando
 
         public void SeedRNG()
         {
-            Random = new Random(Convert.ToInt32(_settings.Seed));
+            //generate the "public" seed
+            string seed = _settings.Seed.Trim();
+            if (string.IsNullOrWhiteSpace(seed))
+            {
+                seed = Environment.TickCount.ToString();
+            }
+            _settings.Seed = seed;
+
+            string field = _settings.GetGenerationSettings();
+            if(!_settings.OutputSpoiler)
+            {
+                field += "bad salt by mzxrules";
+            }
+
+            byte[] hash;
+            using (var sha256 = SHA256.Create())
+            {
+                hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(field));
+            }
+
+            Random = new Random(BitConverter.ToInt32(hash, 8));
         }
 
         private string[] ReadRulesetFromResources()
@@ -1470,7 +1491,6 @@ namespace MMRando
                     worker.ReportProgress(35, "Making gossip quotes...");
 
                     //gossip
-                    SeedRNG();
                     MakeGossipQuotes();
                 }
             }
@@ -1478,7 +1498,6 @@ namespace MMRando
             worker.ReportProgress(40, "Coloring Tatl...");
 
             //Randomize tatl colour
-            SeedRNG();
             SetTatlColour();
 
             //Shuffle BGM
@@ -1486,7 +1505,6 @@ namespace MMRando
             {
                 worker.ReportProgress(45, "Randomizing Music...");
 
-                SeedRNG();
                 ShuffleBGM();
             }
 

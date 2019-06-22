@@ -8,17 +8,14 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using Newtonsoft.Json;
-using System.Linq;
 
 namespace MMRando
 {
     public partial class MainForm : Form
     {
-        private string _seedOld = "";
+        private BindingSource settingsBindingSource;
 
-        private BindingSource settingsDataSource;
-
-        public Settings _settings { get; set; }
+        public Settings _settings { get; set; } = new Settings();
 
         public AboutForm About { get; private set; }
         public ManualForm Manual { get; private set; }
@@ -119,6 +116,7 @@ namespace MMRando
 
         private void bgWorker_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            settingsBindingSource.ResumeBinding();
             pProgress.Value = 0;
             lStatus.Text = "Ready...";
             EnableAllControls(true);
@@ -249,71 +247,17 @@ namespace MMRando
             }
 
             EnableAllControls(false);
+            settingsBindingSource.SuspendBinding();
+            SaveSettings();
             bgWorker.RunWorkerAsync();
-        }
-
-
-        private void tSString_Enter(object sender, EventArgs e)
-        {
-            //_oldSettingsString = tSString.Text;
-            //_isUpdating = true;
-        }
-
-        private void tSString_Leave(object sender, EventArgs e)
-        {
-            //try
-            //{
-            //    _settings.Update(tSString.Text);
-            //    UpdateCheckboxes();
-            //    ToggleCheckBoxes();
-            //}
-            //catch
-            //{
-            //    tSString.Text = _oldSettingsString;
-            //    _settings.Update(_oldSettingsString);
-            //    MessageBox.Show("Settings string is invalid; reverted to previous settings.",
-            //        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-
-            //_isUpdating = false;
-        }
-
-        private void tSString_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyData == Keys.Enter)
-            {
-                cDummy.Select();
-            };
         }
 
         private void tSeed_Enter(object sender, EventArgs e)
         {
-            _seedOld = _settings.Seed;
         }
 
         private void tSeed_Leave(object sender, EventArgs e)
         {
-            try
-            {
-                int seed = Convert.ToInt32(tSeed.Text);
-                if (seed < 0)
-                {
-                    seed = Math.Abs(seed);
-                    tSeed.Text = seed.ToString();
-                    MessageBox.Show("Seed must be positive",
-                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-                else
-                {
-                    _settings.Seed = tSeed.Text;
-                }
-            }
-            catch
-            {
-                tSeed.Text = _seedOld;
-                MessageBox.Show("Invalid seed: must be a positive integer.",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            };
         }
 
         private void tSeed_KeyDown(object sender, KeyEventArgs e)
@@ -461,60 +405,72 @@ namespace MMRando
             bTunic.Enabled = v;
 
             tSeed.Enabled = v;
-            tSString.Enabled = v;
         }
 
         #endregion
 
         #region Settings
 
-        public void InitializeSettings()
+        private void InitializeSettings()
         {
-            _settings = new Settings();
+            var settingsPath = "settings.json";
+            if (File.Exists(settingsPath))
+            {
+                var json = File.ReadAllText(settingsPath);
+                var settings = JsonConvert.DeserializeObject<Settings>(json);
+                _settings = settings;
+            }
+            else
+            {
+                _settings = new Settings();
+            }
+        }
 
-            bTunic.BackColor = _settings.TunicColor;
-            _settings.Seed = Math.Abs(Environment.TickCount).ToString();
-
-
-            tSeed.Text = _settings.Seed.ToString();
+        private void SaveSettings()
+        {
+            var settings = JsonConvert.SerializeObject(_settings, Formatting.Indented);
+            File.WriteAllText("settings.json", settings);
         }
 
         private void BindProperties()
         {
-            settingsDataSource = new BindingSource { DataSource = typeof(Settings) };
-            BindTextBoxToSettings(tROMName, nameof(_settings.InputROMFilename));
+            settingsBindingSource = new BindingSource { DataSource = typeof(Settings) };
+
+            // Input Settings
+            BindTextBoxToSetting(tROMName, nameof(_settings.InputROMFilename));
+            BindTextBoxToSetting(tSeed, nameof(_settings.Seed));
 
             // Output Settings
-            BindCheckboxToSettings(cN64, nameof(_settings.OutputN64ROM));
-            BindCheckboxToSettings(cVC, nameof(_settings.OutputVC));
-            BindCheckboxToSettings(cSpoiler, nameof(_settings.OutputTextSpoiler));
-            BindCheckboxToSettings(cHTMLLog, nameof(_settings.OutputHTMLSpoiler));
-            BindCheckboxToSettings(cPatch, nameof(_settings.OutputROMPatch));
+            BindCheckboxToSetting(cN64, nameof(_settings.OutputN64ROM));
+            BindCheckboxToSetting(cVC, nameof(_settings.OutputVC));
+            BindCheckboxToSetting(cSpoiler, nameof(_settings.OutputTextSpoiler));
+            BindCheckboxToSetting(cHTMLLog, nameof(_settings.OutputHTMLSpoiler));
+            BindCheckboxToSetting(cPatch, nameof(_settings.OutputROMPatch));
 
             // Main generation settings
-            BindCheckboxToSettings(cUserItems, nameof(_settings.UseCustomItemList));
-            BindCheckboxToSettings(cMixSongs, nameof(_settings.AddSongs));
-            BindCheckboxToSettings(cDChests, nameof(_settings.AddDungeonItems));
-            BindCheckboxToSettings(cShop, nameof(_settings.AddShopItems));
-            BindCheckboxToSettings(cBottled, nameof(_settings.RandomizeBottleCatchContents));
-            BindCheckboxToSettings(cSoS, nameof(_settings.ExcludeSongOfSoaring));
-            BindCheckboxToSettings(cGossip, nameof(_settings.EnableGossipHints));
-            BindCheckboxToSettings(cDEnt, nameof(_settings.RandomizeDungeonEntrances));
-            BindCheckboxToSettings(cAdditional, nameof(_settings.AddOtherItems));
-            BindCheckboxToSettings(cEnemy, nameof(_settings.RandomizeEnemies));
-            BindCheckboxToSettings(cMoonItems, nameof(_settings.AddMoonItems));
+            BindCheckboxToSetting(cUserItems, nameof(_settings.UseCustomItemList));
+            BindCheckboxToSetting(cMixSongs, nameof(_settings.AddSongs));
+            BindCheckboxToSetting(cDChests, nameof(_settings.AddDungeonItems));
+            BindCheckboxToSetting(cShop, nameof(_settings.AddShopItems));
+            BindCheckboxToSetting(cBottled, nameof(_settings.RandomizeBottleCatchContents));
+            BindCheckboxToSetting(cSoS, nameof(_settings.ExcludeSongOfSoaring));
+            BindCheckboxToSetting(cGossip, nameof(_settings.EnableGossipHints));
+            BindCheckboxToSetting(cDEnt, nameof(_settings.RandomizeDungeonEntrances));
+            BindCheckboxToSetting(cAdditional, nameof(_settings.AddOtherItems));
+            BindCheckboxToSetting(cEnemy, nameof(_settings.RandomizeEnemies));
+            BindCheckboxToSetting(cMoonItems, nameof(_settings.AddMoonItems));
 
             // Gimmicks
-            BindCheckboxToSettings(cHideClock, nameof(_settings.HideClock));
+            BindCheckboxToSetting(cHideClock, nameof(_settings.HideClock));
 
             // Comforts/cosmetics
-            BindCheckboxToSettings(cCutsc, nameof(_settings.ShortenCutscenes));
-            BindCheckboxToSettings(cQText, nameof(_settings.QuickTextEnabled));
-            BindCheckboxToSettings(cBGM, nameof(_settings.RandomizeBGM));
-            BindCheckboxToSettings(cNoMusic, nameof(_settings.NoBGM));
-            BindCheckboxToSettings(cFreeHints, nameof(_settings.FreeHints));
-            BindCheckboxToSettings(cClearHints, nameof(_settings.ClearHints));
-            BindCheckboxToSettings(cNoDowngrades, nameof(_settings.PreventDowngrades));
+            BindCheckboxToSetting(cCutsc, nameof(_settings.ShortenCutscenes));
+            BindCheckboxToSetting(cQText, nameof(_settings.QuickTextEnabled));
+            BindCheckboxToSetting(cBGM, nameof(_settings.RandomizeBGM));
+            BindCheckboxToSetting(cNoMusic, nameof(_settings.NoBGM));
+            BindCheckboxToSetting(cFreeHints, nameof(_settings.FreeHints));
+            BindCheckboxToSetting(cClearHints, nameof(_settings.ClearHints));
+            BindCheckboxToSetting(cNoDowngrades, nameof(_settings.PreventDowngrades));
 
             BindComboBoxToEnumSetting(cDMult, nameof(_settings.DamageMode), DamageMode.Default);
             BindComboBoxToEnumSetting(cDType, nameof(_settings.DamageEffect), DamageEffect.Default);
@@ -525,24 +481,24 @@ namespace MMRando
             BindComboBoxToEnumSetting(cFloors, nameof(_settings.FloorType), FloorType.Default);
             BindComboBoxToEnumSetting(cClockSpeed, nameof(_settings.ClockSpeed), ClockSpeed.Default);
 
-            bTunic.DataBindings.Add("BackColor", settingsDataSource, nameof(_settings.TunicColor), true, DataSourceUpdateMode.OnPropertyChanged);
-            settingsDataSource.DataSource = _settings;
+            bTunic.DataBindings.Add("BackColor", settingsBindingSource, nameof(_settings.TunicColor), true, DataSourceUpdateMode.OnPropertyChanged);
+            settingsBindingSource.DataSource = _settings;
         }
 
-        private void BindCheckboxToSettings(CheckBox checkbox, string property)
+        private void BindCheckboxToSetting(CheckBox checkbox, string property)
         {
-            checkbox.DataBindings.Add("Checked", settingsDataSource, property, true, DataSourceUpdateMode.OnPropertyChanged);
+            checkbox.DataBindings.Add("Checked", settingsBindingSource, property, true, DataSourceUpdateMode.OnPropertyChanged);
         }
         
-        private void BindTextBoxToSettings(TextBox textBox, string property)
+        private void BindTextBoxToSetting(TextBox textBox, string property)
         {
-            textBox.DataBindings.Add("Text", settingsDataSource, property);
+            textBox.DataBindings.Add("Text", settingsBindingSource, property);
         }
 
         private void BindComboBoxToEnumSetting<T>(ComboBox comboBox, string property, T enumDefault)
         {
             comboBox.BindEnumToCombobox(enumDefault);
-            comboBox.DataBindings.Add("SelectedValue", settingsDataSource, property, true, DataSourceUpdateMode.OnPropertyChanged);
+            comboBox.DataBindings.Add("SelectedValue", settingsBindingSource, property, true, DataSourceUpdateMode.OnPropertyChanged);
         }
 
         #endregion

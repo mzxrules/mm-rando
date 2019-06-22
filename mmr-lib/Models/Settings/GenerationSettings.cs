@@ -18,7 +18,7 @@ namespace MMRando.Models
             get => seed;
             set => SetField(ref seed, value);
         }
-        private string seed;
+        private string seed = "";
 
         /// <summary>
         /// Selected mode of logic (affects randomization rules)

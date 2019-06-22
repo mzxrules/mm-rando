@@ -79,11 +79,7 @@ namespace MMRando.Models
         {
             get
             {
-                string settings = ToString();
-                string appendSeed = OutputSpoiler ? $"{Seed}_" : "";
-                string filename = $"MMR_{appendSeed}{settings}";
-
-                return filename + ".z64";
+                return $"MMR_{Seed}.z64";
             }
         }
 
@@ -108,7 +104,7 @@ namespace MMRando.Models
                 SetField(ref outputTextSpoiler, value);
             }
         }
-        private bool outputTextSpoiler = true;
+        private bool outputTextSpoiler;
 
         /// <summary>
         /// Generate HTML spoiler log on randomizing
@@ -118,7 +114,7 @@ namespace MMRando.Models
             get => outputHTMLSpoiler;
             set => SetField(ref outputHTMLSpoiler, value);
         }
-        private bool outputHTMLSpoiler;
+        private bool outputHTMLSpoiler = true;
 
         /// <summary>
         /// Use Custom Item list for the logic.
@@ -310,123 +306,6 @@ namespace MMRando.Models
 
         #endregion
 
-        // Functions
-
-        public void Update(string settings)
-        {
-            var parts = settings.Split('-')
-                .Select(p => Base36Utils.Decode(p))
-                .ToArray();
-
-            if (parts.Any(p => p > int.MaxValue))
-            {
-                throw new ArgumentException(nameof(settings));
-            }
-
-            int part1 = (int)parts[0];
-            int part2 = (int)parts[1];
-            int part3 = (int)parts[2];
-            int part4 = (int)parts[3];
-
-            PreventDowngrades = (part1 & 524288) > 0;
-            NoBGM = (part1 & 262144) > 0;
-            HideClock = (part1 & 131072) > 0;
-            ClearHints = (part1 & 65536) > 0;
-            AddMoonItems = (part1 & 32768) > 0;
-            FreeHints = (part1 & 16384) > 0;
-            UseCustomItemList = (part1 & 8192) > 0;
-            AddOtherItems = (part1 & 4096) > 0;
-            EnableGossipHints = (part1 & 2048) > 0;
-            ExcludeSongOfSoaring = (part1 & 1024) > 0;
-            OutputTextSpoiler = (part1 & 512) > 0;
-            AddSongs = (part1 & 256) > 0;
-            RandomizeBottleCatchContents = (part1 & 128) > 0;
-            AddDungeonItems = (part1 & 64) > 0;
-            AddShopItems = (part1 & 32) > 0;
-            RandomizeDungeonEntrances = (part1 & 16) > 0;
-            RandomizeBGM = (part1 & 8) > 0;
-            RandomizeEnemies = (part1 & 4) > 0;
-            ShortenCutscenes = (part1 & 2) > 0;
-            QuickTextEnabled = (part1 & 1) > 0;
-
-            var damageMultiplierIndex = (int)((part2 & 0xF0000000) >> 28);
-            var damageTypeIndex = (part2 & 0xF000000) >> 24;
-            var modeIndex = (part2 & 0xFF0000) >> 16;
-            var characterIndex = (part2 & 0xFF00) >> 8;
-            var tatlColorIndex = part2 & 0xFF;
-
-            var gravityTypeIndex = (int)((part3 & 0xF0000000) >> 28);
-            var floorTypeIndex = (part3 & 0xF000000) >> 24;
-            var tunicColor = Color.FromArgb(
-                (part3 & 0xFF0000) >> 16,
-                (part3 & 0xFF00) >> 8,
-                part3 & 0xFF);
-
-            var clockSpeedIndex = (byte)(part4 & 0xFF);
-
-            DamageMode = (DamageMode)damageMultiplierIndex;
-            DamageEffect = (DamageEffect)damageTypeIndex;
-            LogicMode = (LogicMode)modeIndex;
-            Character = (Character)characterIndex;
-            TatlColorSchema = (TatlColorSchema)tatlColorIndex;
-            MovementMode = (MovementMode)gravityTypeIndex;
-            FloorType = (FloorType)floorTypeIndex;
-            TunicColor = tunicColor;
-            ClockSpeed = (ClockSpeed)clockSpeedIndex;
-
-        }
-
-
-        private int[] BuildSettingsBytes()
-        {
-            int[] parts = new int[4];
-
-            if (PreventDowngrades) { parts[0] += 524288; }
-            if (NoBGM) { parts[0] += 262144; }
-            if (HideClock) { parts[0] += 131072; };
-            if (ClearHints) { parts[0] += 65536; };
-            if (AddMoonItems) { parts[0] += 32768; };
-            if (FreeHints) { parts[0] += 16384; };
-            if (UseCustomItemList) { parts[0] += 8192; };
-            if (AddOtherItems) { parts[0] += 4096; };
-            if (EnableGossipHints) { parts[0] += 2048; };
-            if (ExcludeSongOfSoaring) { parts[0] += 1024; };
-            if (OutputTextSpoiler) { parts[0] += 512; };
-            if (AddSongs) { parts[0] += 256; };
-            if (RandomizeBottleCatchContents) { parts[0] += 128; };
-            if (AddDungeonItems) { parts[0] += 64; };
-            if (AddShopItems) { parts[0] += 32; };
-            if (RandomizeDungeonEntrances) { parts[0] += 16; };
-            if (RandomizeBGM) { parts[0] += 8; };
-            if (RandomizeEnemies) { parts[0] += 4; };
-            if (ShortenCutscenes) { parts[0] += 2; };
-            if (QuickTextEnabled) { parts[0] += 1; };
-
-            parts[1] = (byte)LogicMode << 16
-                | (byte)Character << 8
-                | (byte)TatlColorSchema
-                | (byte)DamageEffect << 24
-                    | (byte)DamageMode << 28;
-
-            parts[2] = TunicColor.R << 16
-                | TunicColor.G << 8
-                | TunicColor.B
-                | (byte)FloorType << 24
-                    | (byte)MovementMode << 28;
-
-            parts[3] = (byte)ClockSpeed;
-
-            return parts;
-        }
-
-        private string EncodeSettings()
-        {
-            var partsEncoded = BuildSettingsBytes()
-                .Select(p => Base36Utils.Encode(p))
-                .ToArray();
-
-            return string.Join("-", partsEncoded);
-        }
 
         public string GetGenerationSettings()
         {
@@ -438,7 +317,7 @@ namespace MMRando.Models
 
         public override string ToString()
         {
-            return EncodeSettings();
+            return "Settings";
         }
     }
 }

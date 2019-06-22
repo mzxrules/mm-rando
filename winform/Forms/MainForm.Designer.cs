@@ -38,13 +38,14 @@ namespace MMRando
             this.cUserItems = new System.Windows.Forms.CheckBox();
             this.tSettings = new System.Windows.Forms.TabControl();
             this.tabROMSettings = new System.Windows.Forms.TabPage();
-            this.cPatch = new System.Windows.Forms.CheckBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.cHTMLLog = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.cSpoiler = new System.Windows.Forms.CheckBox();
-            this.cVC = new System.Windows.Forms.CheckBox();
             this.cN64 = new System.Windows.Forms.CheckBox();
-            this.lOutput = new System.Windows.Forms.Label();
+            this.cVC = new System.Windows.Forms.CheckBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.cPatch = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.tabMain = new System.Windows.Forms.TabPage();
             this.cMoonItems = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -110,8 +111,6 @@ namespace MMRando
             this.lStatus = new System.Windows.Forms.Label();
             this.tSeed = new System.Windows.Forms.TextBox();
             this.lSeed = new System.Windows.Forms.Label();
-            this.tSString = new System.Windows.Forms.TextBox();
-            this.lSString = new System.Windows.Forms.Label();
             this.cDummy = new System.Windows.Forms.CheckBox();
             this.lHrule = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -137,7 +136,7 @@ namespace MMRando
             this.bopen.Location = new System.Drawing.Point(3, 37);
             this.bopen.Name = "bopen";
             this.bopen.Size = new System.Drawing.Size(103, 27);
-            this.bopen.TabIndex = 0;
+            this.bopen.TabIndex = 1;
             this.bopen.Text = "Open ROM...";
             this.bopen.UseVisualStyleBackColor = true;
             this.bopen.Click += new System.EventHandler(this.bopen_Click);
@@ -152,7 +151,7 @@ namespace MMRando
             this.tROMName.Name = "tROMName";
             this.tROMName.ReadOnly = true;
             this.tROMName.Size = new System.Drawing.Size(230, 20);
-            this.tROMName.TabIndex = 1;
+            this.tROMName.TabIndex = 2;
             // 
             // cUserItems
             // 
@@ -177,19 +176,20 @@ namespace MMRando
             this.tSettings.Name = "tSettings";
             this.tSettings.SelectedIndex = 0;
             this.tSettings.Size = new System.Drawing.Size(354, 298);
-            this.tSettings.TabIndex = 10;
+            this.tSettings.TabIndex = 1;
             // 
             // tabROMSettings
             // 
-            this.tabROMSettings.Controls.Add(this.cPatch);
+            this.tabROMSettings.Controls.Add(this.label9);
             this.tabROMSettings.Controls.Add(this.cHTMLLog);
-            this.tabROMSettings.Controls.Add(this.label1);
             this.tabROMSettings.Controls.Add(this.cSpoiler);
+            this.tabROMSettings.Controls.Add(this.cN64);
+            this.tabROMSettings.Controls.Add(this.cVC);
+            this.tabROMSettings.Controls.Add(this.label8);
+            this.tabROMSettings.Controls.Add(this.cPatch);
+            this.tabROMSettings.Controls.Add(this.label1);
             this.tabROMSettings.Controls.Add(this.tROMName);
             this.tabROMSettings.Controls.Add(this.bopen);
-            this.tabROMSettings.Controls.Add(this.cVC);
-            this.tabROMSettings.Controls.Add(this.cN64);
-            this.tabROMSettings.Controls.Add(this.lOutput);
             this.tabROMSettings.Location = new System.Drawing.Point(4, 25);
             this.tabROMSettings.Name = "tabROMSettings";
             this.tabROMSettings.Padding = new System.Windows.Forms.Padding(3);
@@ -198,19 +198,14 @@ namespace MMRando
             this.tabROMSettings.Text = "ROM Settings";
             this.tabROMSettings.UseVisualStyleBackColor = true;
             // 
-            // cPatch
+            // label9
             // 
-            this.cPatch.AutoSize = true;
-            this.cPatch.BackColor = System.Drawing.Color.Transparent;
-            this.cPatch.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cPatch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cPatch.ForeColor = System.Drawing.Color.Black;
-            this.cPatch.Location = new System.Drawing.Point(81, 116);
-            this.cPatch.Name = "cPatch";
-            this.cPatch.Size = new System.Drawing.Size(89, 17);
-            this.cPatch.TabIndex = 15;
-            this.cPatch.Text = "Output Patch";
-            this.cPatch.UseVisualStyleBackColor = false;
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(166, 76);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(77, 13);
+            this.label9.TabIndex = 7;
+            this.label9.Text = "Spoiler Output:";
             // 
             // cHTMLLog
             // 
@@ -219,21 +214,12 @@ namespace MMRando
             this.cHTMLLog.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cHTMLLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cHTMLLog.ForeColor = System.Drawing.Color.Black;
-            this.cHTMLLog.Location = new System.Drawing.Point(201, 93);
+            this.cHTMLLog.Location = new System.Drawing.Point(187, 92);
             this.cHTMLLog.Name = "cHTMLLog";
-            this.cHTMLLog.Size = new System.Drawing.Size(128, 17);
-            this.cHTMLLog.TabIndex = 14;
-            this.cHTMLLog.Text = "Use HTML spoiler log";
+            this.cHTMLLog.Size = new System.Drawing.Size(56, 17);
+            this.cHTMLLog.TabIndex = 8;
+            this.cHTMLLog.Text = "HTML";
             this.cHTMLLog.UseVisualStyleBackColor = false;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(52, 13);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(250, 13);
-            this.label1.TabIndex = 12;
-            this.label1.Text = "ROM must be Majora\'s Mask (U) ending with \".z64\"";
             // 
             // cSpoiler
             // 
@@ -242,26 +228,12 @@ namespace MMRando
             this.cSpoiler.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cSpoiler.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cSpoiler.ForeColor = System.Drawing.Color.Black;
-            this.cSpoiler.Location = new System.Drawing.Point(62, 93);
+            this.cSpoiler.Location = new System.Drawing.Point(196, 113);
             this.cSpoiler.Name = "cSpoiler";
-            this.cSpoiler.Size = new System.Drawing.Size(108, 17);
-            this.cSpoiler.TabIndex = 8;
-            this.cSpoiler.Text = "Output spoiler log";
+            this.cSpoiler.Size = new System.Drawing.Size(47, 17);
+            this.cSpoiler.TabIndex = 9;
+            this.cSpoiler.Text = "Text";
             this.cSpoiler.UseVisualStyleBackColor = false;
-            // 
-            // cVC
-            // 
-            this.cVC.AutoSize = true;
-            this.cVC.BackColor = System.Drawing.Color.Transparent;
-            this.cVC.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cVC.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cVC.ForeColor = System.Drawing.Color.Black;
-            this.cVC.Location = new System.Drawing.Point(174, 70);
-            this.cVC.Name = "cVC";
-            this.cVC.Size = new System.Drawing.Size(155, 17);
-            this.cVC.TabIndex = 9;
-            this.cVC.Text = "Wii Virtual Console channel";
-            this.cVC.UseVisualStyleBackColor = false;
             // 
             // cN64
             // 
@@ -272,21 +244,58 @@ namespace MMRando
             this.cN64.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cN64.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cN64.ForeColor = System.Drawing.Color.Black;
-            this.cN64.Location = new System.Drawing.Point(96, 70);
+            this.cN64.Location = new System.Drawing.Point(63, 92);
             this.cN64.Name = "cN64";
             this.cN64.Size = new System.Drawing.Size(74, 17);
-            this.cN64.TabIndex = 10;
+            this.cN64.TabIndex = 4;
             this.cN64.Text = "N64 ROM";
             this.cN64.UseVisualStyleBackColor = false;
             // 
-            // lOutput
+            // cVC
             // 
-            this.lOutput.AutoSize = true;
-            this.lOutput.Location = new System.Drawing.Point(10, 70);
-            this.lOutput.Name = "lOutput";
-            this.lOutput.Size = new System.Drawing.Size(70, 13);
-            this.lOutput.TabIndex = 11;
-            this.lOutput.Text = "Output types:";
+            this.cVC.AutoSize = true;
+            this.cVC.BackColor = System.Drawing.Color.Transparent;
+            this.cVC.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cVC.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cVC.ForeColor = System.Drawing.Color.Black;
+            this.cVC.Location = new System.Drawing.Point(79, 115);
+            this.cVC.Name = "cVC";
+            this.cVC.Size = new System.Drawing.Size(58, 17);
+            this.cVC.TabIndex = 5;
+            this.cVC.Text = "Wii VC";
+            this.cVC.UseVisualStyleBackColor = false;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(64, 76);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(73, 13);
+            this.label8.TabIndex = 3;
+            this.label8.Text = "Game Output:";
+            // 
+            // cPatch
+            // 
+            this.cPatch.AutoSize = true;
+            this.cPatch.BackColor = System.Drawing.Color.Transparent;
+            this.cPatch.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cPatch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cPatch.ForeColor = System.Drawing.Color.Black;
+            this.cPatch.Location = new System.Drawing.Point(55, 138);
+            this.cPatch.Name = "cPatch";
+            this.cPatch.Size = new System.Drawing.Size(82, 17);
+            this.cPatch.TabIndex = 6;
+            this.cPatch.Text = "ROM Patch";
+            this.cPatch.UseVisualStyleBackColor = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(52, 13);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(250, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "ROM must be Majora\'s Mask (U) ending with \".z64\"";
             // 
             // tabMain
             // 
@@ -903,10 +912,10 @@ namespace MMRando
             // 
             // bRandomise
             // 
-            this.bRandomise.Location = new System.Drawing.Point(251, 7);
+            this.bRandomise.Location = new System.Drawing.Point(6, 36);
             this.bRandomise.Name = "bRandomise";
-            this.bRandomise.Size = new System.Drawing.Size(92, 50);
-            this.bRandomise.TabIndex = 5;
+            this.bRandomise.Size = new System.Drawing.Size(334, 21);
+            this.bRandomise.TabIndex = 2;
             this.bRandomise.Text = "Randomize";
             this.bRandomise.UseVisualStyleBackColor = true;
             this.bRandomise.Click += new System.EventHandler(this.bRandomise_Click);
@@ -927,7 +936,7 @@ namespace MMRando
             this.mMenu.Location = new System.Drawing.Point(0, 0);
             this.mMenu.Name = "mMenu";
             this.mMenu.Size = new System.Drawing.Size(355, 24);
-            this.mMenu.TabIndex = 12;
+            this.mMenu.TabIndex = 0;
             this.mMenu.Text = "mMenu";
             // 
             // mFile
@@ -1010,7 +1019,7 @@ namespace MMRando
             this.pProgress.Name = "pProgress";
             this.pProgress.Size = new System.Drawing.Size(339, 19);
             this.pProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.pProgress.TabIndex = 13;
+            this.pProgress.TabIndex = 7;
             // 
             // bgWorker
             // 
@@ -1024,16 +1033,16 @@ namespace MMRando
             this.lStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lStatus.Name = "lStatus";
             this.lStatus.Size = new System.Drawing.Size(47, 13);
-            this.lStatus.TabIndex = 13;
+            this.lStatus.TabIndex = 5;
             this.lStatus.Text = "Ready...";
             // 
             // tSeed
             // 
-            this.tSeed.Location = new System.Drawing.Point(77, 10);
-            this.tSeed.MaxLength = 10;
+            this.tSeed.Location = new System.Drawing.Point(42, 10);
+            this.tSeed.MaxLength = 40;
             this.tSeed.Name = "tSeed";
-            this.tSeed.Size = new System.Drawing.Size(168, 20);
-            this.tSeed.TabIndex = 2;
+            this.tSeed.Size = new System.Drawing.Size(298, 20);
+            this.tSeed.TabIndex = 1;
             this.tSeed.Enter += new System.EventHandler(this.tSeed_Enter);
             this.tSeed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tSeed_KeyDown);
             this.tSeed.Leave += new System.EventHandler(this.tSeed_Leave);
@@ -1044,33 +1053,11 @@ namespace MMRando
             this.lSeed.BackColor = System.Drawing.Color.Transparent;
             this.lSeed.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lSeed.ForeColor = System.Drawing.Color.Black;
-            this.lSeed.Location = new System.Drawing.Point(1, 13);
+            this.lSeed.Location = new System.Drawing.Point(6, 13);
             this.lSeed.Name = "lSeed";
-            this.lSeed.Size = new System.Drawing.Size(76, 13);
-            this.lSeed.TabIndex = 3;
-            this.lSeed.Text = "Random seed:";
-            // 
-            // tSString
-            // 
-            this.tSString.Location = new System.Drawing.Point(77, 35);
-            this.tSString.Name = "tSString";
-            this.tSString.Size = new System.Drawing.Size(168, 20);
-            this.tSString.TabIndex = 6;
-            this.tSString.Enter += new System.EventHandler(this.tSString_Enter);
-            this.tSString.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tSString_KeyDown);
-            this.tSString.Leave += new System.EventHandler(this.tSString_Leave);
-            // 
-            // lSString
-            // 
-            this.lSString.AutoSize = true;
-            this.lSString.BackColor = System.Drawing.Color.Transparent;
-            this.lSString.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lSString.ForeColor = System.Drawing.Color.Black;
-            this.lSString.Location = new System.Drawing.Point(1, 35);
-            this.lSString.Name = "lSString";
-            this.lSString.Size = new System.Drawing.Size(76, 13);
-            this.lSString.TabIndex = 7;
-            this.lSString.Text = "Settings string:";
+            this.lSeed.Size = new System.Drawing.Size(35, 13);
+            this.lSeed.TabIndex = 0;
+            this.lSeed.Text = "Seed:";
             // 
             // cDummy
             // 
@@ -1080,7 +1067,7 @@ namespace MMRando
             this.cDummy.Location = new System.Drawing.Point(262, 425);
             this.cDummy.Name = "cDummy";
             this.cDummy.Size = new System.Drawing.Size(80, 17);
-            this.cDummy.TabIndex = 9;
+            this.cDummy.TabIndex = 6;
             this.cDummy.Text = "checkBox1";
             this.cDummy.UseVisualStyleBackColor = true;
             this.cDummy.Visible = false;
@@ -1092,7 +1079,7 @@ namespace MMRando
             this.lHrule.Location = new System.Drawing.Point(17, 313);
             this.lHrule.Name = "lHrule";
             this.lHrule.Size = new System.Drawing.Size(325, 13);
-            this.lHrule.TabIndex = 12;
+            this.lHrule.TabIndex = 2;
             this.lHrule.Text = "_____________________________________________________";
             // 
             // label5
@@ -1102,7 +1089,7 @@ namespace MMRando
             this.label5.Location = new System.Drawing.Point(17, 410);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(325, 13);
-            this.label5.TabIndex = 14;
+            this.label5.TabIndex = 4;
             this.label5.Text = "_____________________________________________________";
             // 
             // openPatch
@@ -1117,7 +1104,7 @@ namespace MMRando
             this.ttOutput.Name = "ttOutput";
             this.ttOutput.SelectedIndex = 0;
             this.ttOutput.Size = new System.Drawing.Size(354, 89);
-            this.ttOutput.TabIndex = 15;
+            this.ttOutput.TabIndex = 3;
             this.ttOutput.SelectedIndexChanged += new System.EventHandler(this.ttOutput_Changed);
             // 
             // tpOutputSettings
@@ -1125,8 +1112,6 @@ namespace MMRando
             this.tpOutputSettings.Controls.Add(this.bRandomise);
             this.tpOutputSettings.Controls.Add(this.tSeed);
             this.tpOutputSettings.Controls.Add(this.lSeed);
-            this.tpOutputSettings.Controls.Add(this.tSString);
-            this.tpOutputSettings.Controls.Add(this.lSString);
             this.tpOutputSettings.Location = new System.Drawing.Point(4, 22);
             this.tpOutputSettings.Name = "tpOutputSettings";
             this.tpOutputSettings.Padding = new System.Windows.Forms.Padding(3);
@@ -1251,7 +1236,6 @@ namespace MMRando
         private System.Windows.Forms.SaveFileDialog saveWad;
         private System.Windows.Forms.CheckBox cVC;
         private System.Windows.Forms.CheckBox cN64;
-        private System.Windows.Forms.Label lOutput;
         private System.Windows.Forms.MenuStrip mMenu;
         private System.Windows.Forms.ToolStripMenuItem mFile;
         private System.Windows.Forms.ToolStripMenuItem mExit;
@@ -1272,9 +1256,6 @@ namespace MMRando
         private System.Windows.Forms.TabPage tabROMSettings;
         private System.Windows.Forms.TextBox tSeed;
         private System.Windows.Forms.Label lSeed;
-        private System.Windows.Forms.TextBox tSString;
-        private System.Windows.Forms.Label lSString;
-        private System.Windows.Forms.CheckBox cSpoiler;
         private System.Windows.Forms.CheckBox cDummy;
         private System.Windows.Forms.Label lHrule;
         private System.Windows.Forms.Label label1;
@@ -1283,7 +1264,6 @@ namespace MMRando
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox cFreeHints;
-        private System.Windows.Forms.CheckBox cHTMLLog;
         private System.Windows.Forms.CheckBox cMoonItems;
         private System.Windows.Forms.CheckBox cPatch;
         private System.Windows.Forms.Button bApplyPatch;
@@ -1299,6 +1279,10 @@ namespace MMRando
         private System.Windows.Forms.CheckBox cHideClock;
         private System.Windows.Forms.CheckBox cNoMusic;
         private System.Windows.Forms.CheckBox cNoDowngrades;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.CheckBox cHTMLLog;
+        private System.Windows.Forms.CheckBox cSpoiler;
+        private System.Windows.Forms.Label label8;
     }
 }
 
