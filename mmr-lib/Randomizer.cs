@@ -448,7 +448,7 @@ namespace MMRando
 
         public void SeedRNG()
         {
-            Random = new Random(_settings.Seed);
+            Random = new Random(Convert.ToInt32(_settings.Seed));
         }
 
         private string[] ReadRulesetFromResources()
@@ -1253,7 +1253,7 @@ namespace MMRando
                 PreserveShopItems();
             }
 
-            if (!_settings.AddOther)
+            if (!_settings.AddOtherItems)
             {
                 PreserveOther();
             }

@@ -544,7 +544,7 @@ namespace MMRando
             }
 
             List<MMFile> originalMMFileList = null;
-            if (_settings.GeneratePatch)
+            if (_settings.OutputROMPatch)
             {
                 originalMMFileList = RomData.MMFileList.Select(file => file.Clone()).ToList();
             }
@@ -600,7 +600,7 @@ namespace MMRando
                 worker.ReportProgress(68, "Writing startup...");
                 WriteStartupStrings();
 
-                if (_settings.GeneratePatch)
+                if (_settings.OutputROMPatch)
                 {
                     worker.ReportProgress(70, "Generating patch...");
                     RomUtils.CreatePatch(outputROMFilename, originalMMFileList);
@@ -612,15 +612,24 @@ namespace MMRando
             WriteTunicColor();
             WriteMuteMusic();
 
-            if (_settings.OutputN64ROM)
+            if (_settings.OutputGame)
             {
                 worker.ReportProgress(75, "Building ROM...");
 
-                byte[] ROM = RomUtils.BuildROM(outputROMFilename);
+                byte[] rom = RomUtils.BuildROM();
+
+                if (_settings.OutputN64ROM)
+                {
+                    using (BinaryWriter newRom = new BinaryWriter(File.Open(outputROMFilename, FileMode.Create)))
+                    {
+                        newRom.Write(rom, 0, rom.Length);
+                    }
+                }
+
                 if (_settings.OutputVC)
                 {
                     worker.ReportProgress(90, "Building VC...");
-                    VCInjectionUtils.BuildVC(ROM, Values.VCDirectory, Path.ChangeExtension(outputROMFilename, "wad"));
+                    VCInjectionUtils.BuildVC(rom, Values.VCDirectory, Path.ChangeExtension(outputROMFilename, "wad"));
                 }
             }
             worker.ReportProgress(100, "Done!");

@@ -4,10 +4,11 @@ using MMRando.Models;
 using MMRando.Utils;
 using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace MMRando
 {
@@ -15,7 +16,9 @@ namespace MMRando
     {
         private bool _isUpdating = false;
         private string _oldSettingsString = "";
-        private int _seedOld = 0;
+        private string _seedOld = "";
+
+        private BindingSource settingsDataSource;
 
         public Settings _settings { get; set; }
 
@@ -39,19 +42,19 @@ namespace MMRando
             InitializeComponent();
             InitializeSettings();
             InitializeTooltips();
+            BindProperties();
 
             ItemEditor = new ItemEditForm(_settings);
             LogicEditor = new LogicEditorForm();
             Manual = new ManualForm();
             About = new AboutForm();
 
-
             Text = AssemblyVersion;
         }
 
         private void InitializeTooltips()
         {
-            // ROM Settings
+            // Output Settings
             TooltipBuilder.SetTooltip(cN64, "Output a randomized .z64 ROM that can be loaded into a N64 Emulator.");
             TooltipBuilder.SetTooltip(cVC, "Output a randomized .WAD file that can be loaded into a Wii Virtual Channel.");
             TooltipBuilder.SetTooltip(cSpoiler, "Output a spoiler log.\n\n The spoiler log contains a list over all items, and their shuffled locations.\n In addition, the spoiler log contains version information, seed and settings string used in the randomization.");
@@ -99,11 +102,7 @@ namespace MMRando
         private void mmrMain_Load(object sender, EventArgs e)
         {
             // initialise some stuff
-            _isUpdating = true;
-
             InitializeBackgroundWorker();
-
-            _isUpdating = false;
         }
 
         private void InitializeBackgroundWorker()
@@ -146,14 +145,14 @@ namespace MMRando
                 randomized = new RandomizedResult(_settings, null);
             }
 
-            if (_settings.GenerateSpoilerLog
+            if (_settings.OutputSpoiler
                 && _settings.LogicMode != LogicMode.Vanilla)
             {
                 SpoilerUtils.CreateSpoilerLog(randomized, _settings);
             }
 
 
-            if (_settings.ApplyPatch || _settings.OutputN64ROM || _settings.GeneratePatch)
+            if (_settings.ApplyPatch || _settings.OutputGame || _settings.OutputROMPatch)
             {
                 try
                 {
@@ -175,14 +174,8 @@ namespace MMRando
 
         private void bTunic_Click(object sender, EventArgs e)
         {
-            _isUpdating = true;
-
             cTunic.ShowDialog();
             _settings.TunicColor = cTunic.Color;
-            bTunic.BackColor = cTunic.Color;
-            UpdateSettingsString();
-
-            _isUpdating = false;
         }
 
         private void bopen_Click(object sender, EventArgs e)
@@ -201,7 +194,6 @@ namespace MMRando
                 }
 
                 _settings.InputROMFilename = openROM.FileName;
-                tROMName.Text = _settings.InputROMFilename;
             }
         }
 
@@ -251,7 +243,7 @@ namespace MMRando
                 return;
             }
 
-            if (!(_settings.ApplyPatch || _settings.OutputN64ROM || _settings.OutputVC || _settings.GeneratePatch || _settings.GenerateSpoilerLog))
+            if (!(_settings.ApplyPatch || _settings.OutputGame || _settings.OutputROMPatch || _settings.OutputSpoiler))
             {
                 MessageBox.Show("No output selected.",
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -265,27 +257,27 @@ namespace MMRando
 
         private void tSString_Enter(object sender, EventArgs e)
         {
-            _oldSettingsString = tSString.Text;
-            _isUpdating = true;
+            //_oldSettingsString = tSString.Text;
+            //_isUpdating = true;
         }
 
         private void tSString_Leave(object sender, EventArgs e)
         {
-            try
-            {
-                _settings.Update(tSString.Text);
-                UpdateCheckboxes();
-                ToggleCheckBoxes();
-            }
-            catch
-            {
-                tSString.Text = _oldSettingsString;
-                _settings.Update(_oldSettingsString);
-                MessageBox.Show("Settings string is invalid; reverted to previous settings.",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            //try
+            //{
+            //    _settings.Update(tSString.Text);
+            //    UpdateCheckboxes();
+            //    ToggleCheckBoxes();
+            //}
+            //catch
+            //{
+            //    tSString.Text = _oldSettingsString;
+            //    _settings.Update(_oldSettingsString);
+            //    MessageBox.Show("Settings string is invalid; reverted to previous settings.",
+            //        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
 
-            _isUpdating = false;
+            //_isUpdating = false;
         }
 
         private void tSString_KeyDown(object sender, KeyEventArgs e)
@@ -298,7 +290,7 @@ namespace MMRando
 
         private void tSeed_Enter(object sender, EventArgs e)
         {
-            _seedOld = Convert.ToInt32(tSeed.Text);
+            _seedOld = _settings.Seed;
             _isUpdating = true;
         }
 
@@ -316,51 +308,16 @@ namespace MMRando
                 }
                 else
                 {
-                    _settings.Seed = seed;
+                    _settings.Seed = tSeed.Text;
                 }
             }
             catch
             {
-                tSeed.Text = _seedOld.ToString();
+                tSeed.Text = _seedOld;
                 MessageBox.Show("Invalid seed: must be a positive integer.",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             };
-            UpdateSettingsString();
             _isUpdating = false;
-        }
-
-        private void UpdateCheckboxes()
-        {
-            cUserItems.Checked = _settings.UseCustomItemList;
-            cAdditional.Checked = _settings.AddOther;
-            cGossip.Checked = _settings.EnableGossipHints;
-            cSoS.Checked = _settings.ExcludeSongOfSoaring;
-            cSpoiler.Checked = _settings.GenerateSpoilerLog;
-            cMixSongs.Checked = _settings.AddSongs;
-            cBottled.Checked = _settings.RandomizeBottleCatchContents;
-            cDChests.Checked = _settings.AddDungeonItems;
-            cShop.Checked = _settings.AddShopItems;
-            cDEnt.Checked = _settings.RandomizeDungeonEntrances;
-            cBGM.Checked = _settings.RandomizeBGM;
-            cNoMusic.Checked = _settings.NoBGM;
-            cEnemy.Checked = _settings.RandomizeEnemies;
-            cCutsc.Checked = _settings.ShortenCutscenes;
-            cQText.Checked = _settings.QuickTextEnabled;
-            cFreeHints.Checked = _settings.FreeHints;
-            cMoonItems.Checked = _settings.AddMoonItems;
-            cClearHints.Checked = _settings.ClearHints;
-            cHideClock.Checked = _settings.HideClock;
-            cClockSpeed.SelectedIndex = (int) _settings.ClockSpeed;
-            cNoDowngrades.Checked = _settings.PreventDowngrades;
-
-            cDMult.SelectedIndex = (int)_settings.DamageMode;
-            cDType.SelectedIndex = (int)_settings.DamageEffect;
-            cMode.SelectedIndex = (int)_settings.LogicMode;
-            cLink.SelectedIndex = (int)_settings.Character;
-            cTatl.SelectedIndex = (int)_settings.TatlColorSchema;
-            cGravity.SelectedIndex = (int)_settings.MovementMode;
-            cFloors.SelectedIndex = (int)_settings.FloorType;
-            bTunic.BackColor = _settings.TunicColor;
         }
 
         private void tSeed_KeyDown(object sender, KeyEventArgs e)
@@ -373,211 +330,133 @@ namespace MMRando
 
         private void cUserItems_CheckedChanged(object sender, EventArgs e)
         {
-
-            cDChests.Checked = false;
-
-            cShop.Checked = false;
-
-            cBottled.Checked = false;
-
-            cSoS.Checked = false;
-
-            cAdditional.Checked = false;
-
-            cMoonItems.Checked = false;
-
-            UpdateSingleSetting(() => _settings.UseCustomItemList = cUserItems.Checked);
-
         }
 
         private void cN64_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.OutputN64ROM = cN64.Checked);
-            cVC.Enabled = cN64.Checked;
-            cVC.Checked &= cVC.Enabled;
-            UpdateSingleSetting(() => _settings.OutputVC = cVC.Enabled && cVC.Checked);
         }
 
         private void cSpoiler_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.GenerateSpoilerLog = cSpoiler.Checked);
-            UpdateSingleSetting(() => cHTMLLog.Enabled = cSpoiler.Checked);
-
-            if (cHTMLLog.Checked)
-            {
-                cHTMLLog.Checked = false;
-                UpdateSingleSetting(() => _settings.GenerateHTMLLog = false);
-            }
-
         }
 
         private void cPatch_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.GeneratePatch = cPatch.Checked);
         }
 
         private void cHTMLLog_CheckedChanged(object sender,EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.GenerateHTMLLog = cHTMLLog.Checked);
         }
 
 
         private void cAdditional_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.AddOther = cAdditional.Checked);
         }
 
         private void cMoonItems_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.AddMoonItems = cMoonItems.Checked);
         }
 
         private void cBGM_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.RandomizeBGM = cBGM.Checked);
         }
 
         private void cNoMusic_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.NoBGM = cNoMusic.Checked);
         }
 
         private void cBottled_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.RandomizeBottleCatchContents = cBottled.Checked);
         }
 
         private void cCutsc_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.ShortenCutscenes = cCutsc.Checked);
         }
 
         private void cDChests_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.AddDungeonItems = cDChests.Checked);
         }
 
         private void cDEnt_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.RandomizeDungeonEntrances = cDEnt.Checked);
         }
 
         private void cDMult_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.DamageMode = (DamageMode)cDMult.SelectedIndex);
         }
 
         private void cDType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.DamageEffect = (DamageEffect)cDType.SelectedIndex);
         }
 
         private void cEnemy_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.RandomizeEnemies = cEnemy.Checked);
         }
 
         private void cFloors_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.FloorType = (FloorType)cFloors.SelectedIndex);
         }
 
         private void cGossip_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.EnableGossipHints = cGossip.Checked);
         }
 
         private void cGravity_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.MovementMode = (MovementMode)cGravity.SelectedIndex);
         }
 
         private void cLink_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.Character = (Character)cLink.SelectedIndex);
         }
 
         private void cMixSongs_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.AddSongs = cMixSongs.Checked);
         }
 
         private void cFreeHints_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.FreeHints = cFreeHints.Checked);
         }
 
         private void cClearHints_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.ClearHints = cClearHints.Checked);
         }
 
         private void cNoDowngrades_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.PreventDowngrades = cNoDowngrades.Checked);
         }
 
         private void cHideClock_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.HideClock = cHideClock.Checked);
         }
 
         private void cQText_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.QuickTextEnabled = cQText.Checked);
         }
 
         private void cShop_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.AddShopItems = cShop.Checked);
         }
 
         private void cSoS_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.ExcludeSongOfSoaring = cSoS.Checked);
         }
 
         private void cTatl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.TatlColorSchema = (TatlColorSchema)cTatl.SelectedIndex);
         }
-
         private void cMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-
-            if (_isUpdating)
-            {
-                return;
-            }
-
-            switch (cMode.SelectedIndex)
-            {
-                case 0: _settings.LogicMode = LogicMode.Casual; break;
-                case 1: _settings.LogicMode = LogicMode.Glitched; break;
-                case 2: _settings.LogicMode = LogicMode.NoLogic; break;
-                case 3: _settings.LogicMode = LogicMode.UserLogic; break;
-                case 4: _settings.LogicMode = LogicMode.Vanilla; break;
-                default: return;
-            }
-
-            if (_settings.LogicMode == LogicMode.UserLogic
-                && openLogic.ShowDialog() != DialogResult.OK)
-            {
-                cMode.SelectedIndex = 0;
-            }
-
-            UpdateSingleSetting(() => _settings.LogicMode = (LogicMode)cMode.SelectedIndex);
-            _settings.UserLogicFileName = openLogic.FileName;
+            //
+            //if (_settings.LogicMode == LogicMode.UserLogic
+            //    && openLogic.ShowDialog() != DialogResult.OK)
         }
 
         private void cClockSpeed_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.ClockSpeed = (ClockSpeed)cClockSpeed.SelectedIndex);
         }
 
         private void cVC_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _settings.OutputVC = cVC.Checked);
         }
 
         private void mExit_Click(object sender, EventArgs e)
@@ -643,7 +522,7 @@ namespace MMRando
                 cMoonItems.Enabled = onMainTab;
             }
 
-            cHTMLLog.Enabled = onMainTab && _settings.GenerateSpoilerLog;
+            cHTMLLog.Enabled = onMainTab;
 
             if (_settings.UseCustomItemList)
             {
@@ -668,31 +547,9 @@ namespace MMRando
             }
         }
 
-        /// <summary>
-        /// Utility function that takes a function should update a single setting. 
-        /// This function makes sure concurrent updates are not allowed, updates 
-        /// settings string and enables/disables checkboxes automatically.
-        /// </summary>
-        /// <param name="update">A setting-updating function</param>
-        private void UpdateSingleSetting(Action update)
-        {
-            if (_isUpdating)
-            {
-                return;
-            }
-
-            _isUpdating = true;
-
-            update?.Invoke();
-            UpdateSettingsString();
-            ToggleCheckBoxes();
-
-            _isUpdating = false;
-        }
-
         private void UpdateSettingsString()
         {
-            tSString.Text = _settings.ToString();
+            //tSString.Text = _settings.ToString();
         }
 
         private void EnableAllControls(bool v)
@@ -748,39 +605,78 @@ namespace MMRando
         {
             _settings = new Settings();
 
-            cDMult.SelectedIndex = 0;
-            cDType.SelectedIndex = 0;
-            cGravity.SelectedIndex = 0;
-            cFloors.SelectedIndex = 0;
-            cMode.SelectedIndex = 0;
-            cLink.SelectedIndex = 0;
-            cTatl.SelectedIndex = 0;
-            cClockSpeed.SelectedIndex = 0;
-            cSpoiler.Checked = true;
-            cSoS.Checked = true;
-            cGossip.Checked = true;
-            cNoDowngrades.Checked = true;
-            cCutsc.Checked = true;
-            cQText.Checked = true;
+            bTunic.BackColor = _settings.TunicColor;
+            _settings.Seed = Math.Abs(Environment.TickCount).ToString();
 
-            bTunic.BackColor = Color.FromArgb(0x1E, 0x69, 0x1B);
-
-            _settings.OutputN64ROM = true;
-            _settings.GenerateSpoilerLog = true;
-            _settings.ExcludeSongOfSoaring = true;
-            _settings.EnableGossipHints = true;
-            _settings.ShortenCutscenes = true;
-            _settings.QuickTextEnabled = true;
-            _settings.TunicColor = bTunic.BackColor;
-            _settings.Seed = Math.Abs(Environment.TickCount);
 
             tSeed.Text = _settings.Seed.ToString();
-
-            var oldSettingsString = tSString.Text;
-            UpdateSettingsString();
-            _oldSettingsString = oldSettingsString;
         }
 
+        private void BindProperties()
+        {
+            settingsDataSource = new BindingSource { DataSource = typeof(Settings) };
+            BindTextBoxToSettings(tROMName, nameof(_settings.InputROMFilename));
+
+            // Output Settings
+            BindCheckboxToSettings(cN64, nameof(_settings.OutputN64ROM));
+            BindCheckboxToSettings(cVC, nameof(_settings.OutputVC));
+            BindCheckboxToSettings(cSpoiler, nameof(_settings.OutputTextSpoiler));
+            BindCheckboxToSettings(cHTMLLog, nameof(_settings.OutputHTMLSpoiler));
+            BindCheckboxToSettings(cPatch, nameof(_settings.OutputROMPatch));
+
+            // Main generation settings
+            BindCheckboxToSettings(cUserItems, nameof(_settings.UseCustomItemList));
+            BindCheckboxToSettings(cMixSongs, nameof(_settings.AddSongs));
+            BindCheckboxToSettings(cDChests, nameof(_settings.AddDungeonItems));
+            BindCheckboxToSettings(cShop, nameof(_settings.AddShopItems));
+            BindCheckboxToSettings(cBottled, nameof(_settings.RandomizeBottleCatchContents));
+            BindCheckboxToSettings(cSoS, nameof(_settings.ExcludeSongOfSoaring));
+            BindCheckboxToSettings(cGossip, nameof(_settings.EnableGossipHints));
+            BindCheckboxToSettings(cDEnt, nameof(_settings.RandomizeDungeonEntrances));
+            BindCheckboxToSettings(cAdditional, nameof(_settings.AddOtherItems));
+            BindCheckboxToSettings(cEnemy, nameof(_settings.RandomizeEnemies));
+            BindCheckboxToSettings(cMoonItems, nameof(_settings.AddMoonItems));
+
+            // Gimmicks
+            BindCheckboxToSettings(cHideClock, nameof(_settings.HideClock));
+
+            // Comforts/cosmetics
+            BindCheckboxToSettings(cCutsc, nameof(_settings.ShortenCutscenes));
+            BindCheckboxToSettings(cQText, nameof(_settings.QuickTextEnabled));
+            BindCheckboxToSettings(cBGM, nameof(_settings.RandomizeBGM));
+            BindCheckboxToSettings(cNoMusic, nameof(_settings.NoBGM));
+            BindCheckboxToSettings(cFreeHints, nameof(_settings.FreeHints));
+            BindCheckboxToSettings(cClearHints, nameof(_settings.ClearHints));
+            BindCheckboxToSettings(cNoDowngrades, nameof(_settings.PreventDowngrades));
+
+            BindComboBoxToEnumSetting(cDMult, nameof(_settings.DamageMode), DamageMode.Default);
+            BindComboBoxToEnumSetting(cDType, nameof(_settings.DamageEffect), DamageEffect.Default);
+            BindComboBoxToEnumSetting(cMode, nameof(_settings.LogicMode), LogicMode.Casual);
+            BindComboBoxToEnumSetting(cLink, nameof(_settings.Character), Character.LinkMM);
+            BindComboBoxToEnumSetting(cTatl, nameof(_settings.TatlColorSchema), TatlColorSchema.Default);
+            BindComboBoxToEnumSetting(cGravity, nameof(_settings.MovementMode), MovementMode.Default);
+            BindComboBoxToEnumSetting(cFloors, nameof(_settings.FloorType), FloorType.Default);
+            BindComboBoxToEnumSetting(cClockSpeed, nameof(_settings.ClockSpeed), ClockSpeed.Default);
+
+            bTunic.DataBindings.Add("BackColor", settingsDataSource, nameof(_settings.TunicColor), true, DataSourceUpdateMode.OnPropertyChanged);
+            settingsDataSource.DataSource = _settings;
+        }
+
+        private void BindCheckboxToSettings(CheckBox checkbox, string property)
+        {
+            checkbox.DataBindings.Add("Checked", settingsDataSource, property, true, DataSourceUpdateMode.OnPropertyChanged);
+        }
+        
+        private void BindTextBoxToSettings(TextBox textBox, string property)
+        {
+            textBox.DataBindings.Add("Text", settingsDataSource, property);
+        }
+
+        private void BindComboBoxToEnumSetting<T>(ComboBox comboBox, string property, T enumDefault)
+        {
+            comboBox.BindEnumToCombobox(enumDefault);
+            comboBox.DataBindings.Add("SelectedValue", settingsDataSource, property, true, DataSourceUpdateMode.OnPropertyChanged);
+        }
 
         #endregion
 

@@ -147,7 +147,7 @@ namespace MMRando.Utils
                         continue;
                     }
 
-                    if (!settings.AddOther && ItemUtils.IsOtherItem(item.ID))
+                    if (!settings.AddOtherItems && ItemUtils.IsOtherItem(item.ID))
                     {
                         continue;
                     }

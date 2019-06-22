@@ -217,7 +217,7 @@ namespace MMRando.Utils
             }
         }
 
-        public static byte[] BuildROM(string FileName)
+        public static byte[] BuildROM()
         {
             Parallel.ForEach(RomData.MMFileList, file =>
             {
@@ -253,10 +253,6 @@ namespace MMRando.Utils
             SignROM(ROM);
             FixCRC(ROM);
 
-            using (BinaryWriter NewROM = new BinaryWriter(File.Open(FileName, FileMode.Create)))
-            {
-                NewROM.Write(ROM, 0, ROM.Length);
-            }
             return ROM;
         }
 

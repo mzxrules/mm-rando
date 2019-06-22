@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace MMRando.Utils
 {
@@ -20,7 +21,7 @@ namespace MMRando.Utils
 
             Spoiler spoiler = new Spoiler()
             {
-                Version = "core_version", //MainForm.AssemblyVersion.Substring(26),
+                Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                 SettingsString = settingsString,
                 Seed = settings.Seed,
                 RandomizeDungeonEntrances = settings.RandomizeDungeonEntrances,
@@ -30,7 +31,7 @@ namespace MMRando.Utils
                 CustomItemListString = settings.UseCustomItemList ? settings.CustomItemListString : null,
             };
 
-            if (settings.GenerateHTMLLog)
+            if (settings.OutputHTMLSpoiler)
             {
                 filename += "_SpoilerLog.html";
                 using (StreamWriter newlog = new StreamWriter(Path.Combine(directory, filename)))

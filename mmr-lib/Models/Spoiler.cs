@@ -12,7 +12,7 @@ namespace MMRando.Models
 
         public bool RandomizeDungeonEntrances { get; set; }
 
-        public int Seed { get; set; }
+        public string Seed { get; set; }
 
         public List<SpoilerItem> ItemList { get; set; }
 
