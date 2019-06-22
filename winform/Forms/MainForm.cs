@@ -14,8 +14,6 @@ namespace MMRando
 {
     public partial class MainForm : Form
     {
-        private bool _isUpdating = false;
-        private string _oldSettingsString = "";
         private string _seedOld = "";
 
         private BindingSource settingsDataSource;
@@ -291,7 +289,6 @@ namespace MMRando
         private void tSeed_Enter(object sender, EventArgs e)
         {
             _seedOld = _settings.Seed;
-            _isUpdating = true;
         }
 
         private void tSeed_Leave(object sender, EventArgs e)
@@ -317,7 +314,6 @@ namespace MMRando
                 MessageBox.Show("Invalid seed: must be a positive integer.",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             };
-            _isUpdating = false;
         }
 
         private void tSeed_KeyDown(object sender, KeyEventArgs e)
@@ -328,135 +324,11 @@ namespace MMRando
             }
         }
 
-        private void cUserItems_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cN64_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cSpoiler_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cPatch_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cHTMLLog_CheckedChanged(object sender,EventArgs e)
-        {
-        }
-
-
-        private void cAdditional_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cMoonItems_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cBGM_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cNoMusic_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cBottled_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cCutsc_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cDChests_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cDEnt_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cDMult_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cDType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cEnemy_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cFloors_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cGossip_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cGravity_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cLink_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cMixSongs_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cFreeHints_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cClearHints_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cNoDowngrades_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cHideClock_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cQText_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cShop_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cSoS_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cTatl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
         private void cMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             //
             //if (_settings.LogicMode == LogicMode.UserLogic
             //    && openLogic.ShowDialog() != DialogResult.OK)
-        }
-
-        private void cClockSpeed_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void cVC_CheckedChanged(object sender, EventArgs e)
-        {
         }
 
         private void mExit_Click(object sender, EventArgs e)
@@ -545,11 +417,6 @@ namespace MMRando
                     cMoonItems.Enabled = onMainTab;
                 }
             }
-        }
-
-        private void UpdateSettingsString()
-        {
-            //tSString.Text = _settings.ToString();
         }
 
         private void EnableAllControls(bool v)

@@ -75,6 +75,7 @@ namespace MMRando
             this.cDMult = new System.Windows.Forms.ComboBox();
             this.cGravity = new System.Windows.Forms.ComboBox();
             this.tabComfort = new System.Windows.Forms.TabPage();
+            this.cNoDowngrades = new System.Windows.Forms.CheckBox();
             this.cNoMusic = new System.Windows.Forms.CheckBox();
             this.cClearHints = new System.Windows.Forms.CheckBox();
             this.cFreeHints = new System.Windows.Forms.CheckBox();
@@ -120,7 +121,6 @@ namespace MMRando
             this.tpPatchSettings = new System.Windows.Forms.TabPage();
             this.tPatch = new System.Windows.Forms.TextBox();
             this.bLoadPatch = new System.Windows.Forms.Button();
-            this.cNoDowngrades = new System.Windows.Forms.CheckBox();
             this.tSettings.SuspendLayout();
             this.tabROMSettings.SuspendLayout();
             this.tabMain.SuspendLayout();
@@ -165,7 +165,6 @@ namespace MMRando
             this.cUserItems.TabIndex = 11;
             this.cUserItems.Text = "Use custom item list";
             this.cUserItems.UseVisualStyleBackColor = true;
-            this.cUserItems.CheckedChanged += new System.EventHandler(this.cUserItems_CheckedChanged);
             // 
             // tSettings
             // 
@@ -212,7 +211,6 @@ namespace MMRando
             this.cPatch.TabIndex = 15;
             this.cPatch.Text = "Output Patch";
             this.cPatch.UseVisualStyleBackColor = false;
-            this.cPatch.CheckedChanged += new System.EventHandler(this.cPatch_CheckedChanged);
             // 
             // cHTMLLog
             // 
@@ -227,7 +225,6 @@ namespace MMRando
             this.cHTMLLog.TabIndex = 14;
             this.cHTMLLog.Text = "Use HTML spoiler log";
             this.cHTMLLog.UseVisualStyleBackColor = false;
-            this.cHTMLLog.CheckedChanged += new System.EventHandler(this.cHTMLLog_CheckedChanged);
             // 
             // label1
             // 
@@ -251,7 +248,6 @@ namespace MMRando
             this.cSpoiler.TabIndex = 8;
             this.cSpoiler.Text = "Output spoiler log";
             this.cSpoiler.UseVisualStyleBackColor = false;
-            this.cSpoiler.CheckedChanged += new System.EventHandler(this.cSpoiler_CheckedChanged);
             // 
             // cVC
             // 
@@ -266,7 +262,6 @@ namespace MMRando
             this.cVC.TabIndex = 9;
             this.cVC.Text = "Wii Virtual Console channel";
             this.cVC.UseVisualStyleBackColor = false;
-            this.cVC.CheckedChanged += new System.EventHandler(this.cVC_CheckedChanged);
             // 
             // cN64
             // 
@@ -283,7 +278,6 @@ namespace MMRando
             this.cN64.TabIndex = 10;
             this.cN64.Text = "N64 ROM";
             this.cN64.UseVisualStyleBackColor = false;
-            this.cN64.CheckedChanged += new System.EventHandler(this.cN64_CheckedChanged);
             // 
             // lOutput
             // 
@@ -332,7 +326,6 @@ namespace MMRando
             this.cMoonItems.TabIndex = 15;
             this.cMoonItems.Text = "Moon items";
             this.cMoonItems.UseVisualStyleBackColor = false;
-            this.cMoonItems.CheckedChanged += new System.EventHandler(this.cMoonItems_CheckedChanged);
             // 
             // label3
             // 
@@ -369,7 +362,6 @@ namespace MMRando
             this.cAdditional.TabIndex = 12;
             this.cAdditional.Text = "Everything else";
             this.cAdditional.UseVisualStyleBackColor = false;
-            this.cAdditional.CheckedChanged += new System.EventHandler(this.cAdditional_CheckedChanged);
             // 
             // cGossip
             // 
@@ -384,7 +376,6 @@ namespace MMRando
             this.cGossip.TabIndex = 11;
             this.cGossip.Text = "Gossip stone hints";
             this.cGossip.UseVisualStyleBackColor = false;
-            this.cGossip.CheckedChanged += new System.EventHandler(this.cGossip_CheckedChanged);
             // 
             // cSoS
             // 
@@ -399,7 +390,6 @@ namespace MMRando
             this.cSoS.TabIndex = 10;
             this.cSoS.Text = "Exclude Song of Soaring";
             this.cSoS.UseVisualStyleBackColor = false;
-            this.cSoS.CheckedChanged += new System.EventHandler(this.cSoS_CheckedChanged);
             // 
             // cMixSongs
             // 
@@ -414,7 +404,6 @@ namespace MMRando
             this.cMixSongs.TabIndex = 3;
             this.cMixSongs.Text = "Mix songs with items";
             this.cMixSongs.UseVisualStyleBackColor = false;
-            this.cMixSongs.CheckedChanged += new System.EventHandler(this.cMixSongs_CheckedChanged);
             // 
             // cEnemy
             // 
@@ -429,7 +418,6 @@ namespace MMRando
             this.cEnemy.TabIndex = 9;
             this.cEnemy.Text = "Enemies";
             this.cEnemy.UseVisualStyleBackColor = false;
-            this.cEnemy.CheckedChanged += new System.EventHandler(this.cEnemy_CheckedChanged);
             // 
             // cDChests
             // 
@@ -444,7 +432,6 @@ namespace MMRando
             this.cDChests.TabIndex = 4;
             this.cDChests.Text = "Dungeon items";
             this.cDChests.UseVisualStyleBackColor = false;
-            this.cDChests.CheckedChanged += new System.EventHandler(this.cDChests_CheckedChanged);
             // 
             // cBottled
             // 
@@ -459,7 +446,6 @@ namespace MMRando
             this.cBottled.TabIndex = 5;
             this.cBottled.Text = "Caught bottle contents";
             this.cBottled.UseVisualStyleBackColor = false;
-            this.cBottled.CheckedChanged += new System.EventHandler(this.cBottled_CheckedChanged);
             // 
             // cDEnt
             // 
@@ -474,7 +460,6 @@ namespace MMRando
             this.cDEnt.TabIndex = 7;
             this.cDEnt.Text = "Dungeon entrances";
             this.cDEnt.UseVisualStyleBackColor = false;
-            this.cDEnt.CheckedChanged += new System.EventHandler(this.cDEnt_CheckedChanged);
             // 
             // cShop
             // 
@@ -489,7 +474,6 @@ namespace MMRando
             this.cShop.TabIndex = 6;
             this.cShop.Text = "Shop items";
             this.cShop.UseVisualStyleBackColor = false;
-            this.cShop.CheckedChanged += new System.EventHandler(this.cShop_CheckedChanged);
             // 
             // lMode
             // 
@@ -517,7 +501,6 @@ namespace MMRando
             this.cMode.Name = "cMode";
             this.cMode.Size = new System.Drawing.Size(222, 21);
             this.cMode.TabIndex = 1;
-            this.cMode.SelectedIndexChanged += new System.EventHandler(this.cMode_SelectedIndexChanged);
             // 
             // tabGimmick
             // 
@@ -564,7 +547,6 @@ namespace MMRando
             this.cHideClock.TabIndex = 17;
             this.cHideClock.Text = "Hide Clock UI";
             this.cHideClock.UseVisualStyleBackColor = false;
-            this.cHideClock.CheckedChanged += new System.EventHandler(this.cHideClock_CheckedChanged);
             // 
             // label6
             // 
@@ -590,7 +572,6 @@ namespace MMRando
             this.cClockSpeed.Name = "cClockSpeed";
             this.cClockSpeed.Size = new System.Drawing.Size(158, 21);
             this.cClockSpeed.TabIndex = 15;
-            this.cClockSpeed.SelectedIndexChanged += new System.EventHandler(this.cClockSpeed_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -656,7 +637,6 @@ namespace MMRando
             this.cFloors.Name = "cFloors";
             this.cFloors.Size = new System.Drawing.Size(158, 21);
             this.cFloors.TabIndex = 0;
-            this.cFloors.SelectedIndexChanged += new System.EventHandler(this.cFloors_SelectedIndexChanged);
             // 
             // cDType
             // 
@@ -673,7 +653,6 @@ namespace MMRando
             this.cDType.Name = "cDType";
             this.cDType.Size = new System.Drawing.Size(158, 21);
             this.cDType.TabIndex = 0;
-            this.cDType.SelectedIndexChanged += new System.EventHandler(this.cDType_SelectedIndexChanged);
             // 
             // cDMult
             // 
@@ -689,7 +668,6 @@ namespace MMRando
             this.cDMult.Name = "cDMult";
             this.cDMult.Size = new System.Drawing.Size(158, 21);
             this.cDMult.TabIndex = 0;
-            this.cDMult.SelectedIndexChanged += new System.EventHandler(this.cDMult_SelectedIndexChanged);
             // 
             // cGravity
             // 
@@ -705,7 +683,6 @@ namespace MMRando
             this.cGravity.Name = "cGravity";
             this.cGravity.Size = new System.Drawing.Size(158, 21);
             this.cGravity.TabIndex = 0;
-            this.cGravity.SelectedIndexChanged += new System.EventHandler(this.cGravity_SelectedIndexChanged);
             // 
             // tabComfort
             // 
@@ -730,6 +707,20 @@ namespace MMRando
             this.tabComfort.Text = "Comfort/Cosmetics";
             this.tabComfort.UseVisualStyleBackColor = true;
             // 
+            // cNoDowngrades
+            // 
+            this.cNoDowngrades.AutoSize = true;
+            this.cNoDowngrades.BackColor = System.Drawing.Color.Transparent;
+            this.cNoDowngrades.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cNoDowngrades.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cNoDowngrades.ForeColor = System.Drawing.Color.Black;
+            this.cNoDowngrades.Location = new System.Drawing.Point(23, 161);
+            this.cNoDowngrades.Name = "cNoDowngrades";
+            this.cNoDowngrades.Size = new System.Drawing.Size(101, 17);
+            this.cNoDowngrades.TabIndex = 18;
+            this.cNoDowngrades.Text = "No downgrades";
+            this.cNoDowngrades.UseVisualStyleBackColor = false;
+            // 
             // cNoMusic
             // 
             this.cNoMusic.AutoSize = true;
@@ -743,7 +734,6 @@ namespace MMRando
             this.cNoMusic.TabIndex = 17;
             this.cNoMusic.Text = "No music";
             this.cNoMusic.UseVisualStyleBackColor = false;
-            this.cNoMusic.CheckedChanged += new System.EventHandler(this.cNoMusic_CheckedChanged);
             // 
             // cClearHints
             // 
@@ -758,7 +748,6 @@ namespace MMRando
             this.cClearHints.TabIndex = 16;
             this.cClearHints.Text = "Clear hints";
             this.cClearHints.UseVisualStyleBackColor = false;
-            this.cClearHints.CheckedChanged += new System.EventHandler(this.cClearHints_CheckedChanged);
             // 
             // cFreeHints
             // 
@@ -773,7 +762,6 @@ namespace MMRando
             this.cFreeHints.TabIndex = 15;
             this.cFreeHints.Text = "Free hints";
             this.cFreeHints.UseVisualStyleBackColor = false;
-            this.cFreeHints.CheckedChanged += new System.EventHandler(this.cFreeHints_CheckedChanged);
             // 
             // cTatl
             // 
@@ -790,7 +778,6 @@ namespace MMRando
             this.cTatl.Name = "cTatl";
             this.cTatl.Size = new System.Drawing.Size(106, 21);
             this.cTatl.TabIndex = 12;
-            this.cTatl.SelectedIndexChanged += new System.EventHandler(this.cTatl_SelectedIndexChanged);
             // 
             // cCutsc
             // 
@@ -805,7 +792,6 @@ namespace MMRando
             this.cCutsc.TabIndex = 5;
             this.cCutsc.Text = "Shorten cutscenes";
             this.cCutsc.UseVisualStyleBackColor = false;
-            this.cCutsc.CheckedChanged += new System.EventHandler(this.cCutsc_CheckedChanged);
             // 
             // lTatl
             // 
@@ -832,7 +818,6 @@ namespace MMRando
             this.cQText.TabIndex = 6;
             this.cQText.Text = "Quick text";
             this.cQText.UseVisualStyleBackColor = false;
-            this.cQText.CheckedChanged += new System.EventHandler(this.cQText_CheckedChanged);
             // 
             // cLink
             // 
@@ -847,7 +832,6 @@ namespace MMRando
             this.cLink.Name = "cLink";
             this.cLink.Size = new System.Drawing.Size(106, 21);
             this.cLink.TabIndex = 10;
-            this.cLink.SelectedIndexChanged += new System.EventHandler(this.cLink_SelectedIndexChanged);
             // 
             // lTunic
             // 
@@ -874,7 +858,6 @@ namespace MMRando
             this.cBGM.TabIndex = 8;
             this.cBGM.Text = "Randomize music";
             this.cBGM.UseVisualStyleBackColor = false;
-            this.cBGM.CheckedChanged += new System.EventHandler(this.cBGM_CheckedChanged);
             // 
             // lLink
             // 
@@ -1182,21 +1165,6 @@ namespace MMRando
             this.bLoadPatch.Text = "Load Patch...";
             this.bLoadPatch.UseVisualStyleBackColor = true;
             this.bLoadPatch.Click += new System.EventHandler(this.BLoadPatch_Click);
-            // 
-            // cNoDowngrades
-            // 
-            this.cNoDowngrades.AutoSize = true;
-            this.cNoDowngrades.BackColor = System.Drawing.Color.Transparent;
-            this.cNoDowngrades.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cNoDowngrades.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cNoDowngrades.ForeColor = System.Drawing.Color.Black;
-            this.cNoDowngrades.Location = new System.Drawing.Point(23, 161);
-            this.cNoDowngrades.Name = "cNoDowngrades";
-            this.cNoDowngrades.Size = new System.Drawing.Size(101, 17);
-            this.cNoDowngrades.TabIndex = 18;
-            this.cNoDowngrades.Text = "No downgrades";
-            this.cNoDowngrades.UseVisualStyleBackColor = false;
-            this.cNoDowngrades.CheckedChanged += new System.EventHandler(this.cNoDowngrades_CheckedChanged);
             // 
             // MainForm
             // 
