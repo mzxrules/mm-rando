@@ -4,8 +4,8 @@ namespace MMRando.Models
 {
     public class Gossip
     {
-        public string[] SourceMessage { get; set; }
-        public string[] DestinationMessage { get; set; }
+        public string[] LocationMessage { get; set; }
+        public string[] ItemMessage { get; set; }
 
 
         public static readonly ReadOnlyCollection<string> MessageStartSentences
@@ -54,6 +54,21 @@ namespace MMRando.Models
             = new ReadOnlyCollection<string>(new string[]
             {
                 // todo
+            });
+
+        public static readonly ReadOnlyCollection<int> GuaranteedLocationHints
+            = new ReadOnlyCollection<int>(new int[]
+            {
+                Items.HeartPieceLabFish,
+                Items.ItemBottleDampe,
+                Items.HeartPieceDekuPlayground,
+                Items.MaskTruth,
+                Items.UpgradeGiantWallet,
+                Items.MaskRomani,
+                Items.MaskAllNight,
+                //Items.MaskScents,
+                Items.HeartPieceBoatArchery,
+                Items.ItemGoldDust
             });
     }
 }

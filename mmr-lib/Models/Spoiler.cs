@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using MMRando.GameObjects;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Runtime.Serialization.Json;
 
@@ -17,6 +20,8 @@ namespace MMRando.Models
         public List<SpoilerItem> ItemList { get; set; }
 
         public List<ItemLogic> Logic { get; set; }
+
+        public Dictionary<GossipQuote, string> GossipHints { get; set; }
 
         public string CustomItemListString { get; set; }
 

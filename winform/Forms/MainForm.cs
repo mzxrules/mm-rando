@@ -65,7 +65,6 @@ namespace MMRando
             TooltipBuilder.SetTooltip(cShop, "Enable shop items being placed in the randomization pool.");
             TooltipBuilder.SetTooltip(cBottled, "Enable captured bottle contents being randomized.");
             TooltipBuilder.SetTooltip(cSoS, "Exclude song of soaring from being placed in the randomization pool.");
-            TooltipBuilder.SetTooltip(cGossip, "Enable gossip stones displaying hints on where certain items are located.");
             TooltipBuilder.SetTooltip(cDEnt, "Enable randomization of dungeon entrances. \n\nStone Tower Temple is always vanilla, but Inverted Stone Tower Temple is randomized.");
             TooltipBuilder.SetTooltip(cAdditional, "Enable miscellaneous items being placed in the randomization pool.\n\nAmong the miscellaneous items are:\nFreestanding heartpieces, overworld chests, (hidden) grotto chests, Tingle's maps and bank heartpiece.");
             TooltipBuilder.SetTooltip(cEnemy, "Enable randomization of enemies. May cause softlocks in some circumstances, use at your own risk.");
@@ -76,7 +75,7 @@ namespace MMRando
             TooltipBuilder.SetTooltip(cDType, "Select an effect to occur whenever Link is being damaged:\n\n - Default: Vanilla effects occur.\n - Fire: All damage burns Link.\n - Ice: All damage freezes Link.\n - Shock: All damage shocks link.\n - Knockdown: All damage knocks Link down.\n - Random: Any random effect of the above.");
             TooltipBuilder.SetTooltip(cGravity, "Select a movement modifier:\n\n - Default: No movement modifier.\n - High speed: Link moves at a much higher velocity.\n - Super low gravity: Link can jump very high.\n - Low gravity: Link can jump high.\n - High gravity: Link can barely jump.");
             TooltipBuilder.SetTooltip(cFloors, "Select a floortype for every floor ingame:\n\n - Default: Vanilla floortypes.\n - Sand: Link sinks slowly into every floor, affecting movement speed.\n - Ice: Every floor is slippery.\n - Snow: Similar to sand. \n - Random: Any random floortypes of the above.");
-            TooltipBuilder.SetTooltip(cClockSpeed, "Modify the speed of time. \n\nNote: The slowdown effect of playing inverted song of time does not scale with time speed.");
+            TooltipBuilder.SetTooltip(cClockSpeed, "Modify the speed of time.");
             TooltipBuilder.SetTooltip(cHideClock, "Clock UI will be hidden.");
 
             // Comforts/cosmetics
@@ -90,6 +89,7 @@ namespace MMRando
             TooltipBuilder.SetTooltip(bTunic, "Select the color of Link's Tunic.");
             TooltipBuilder.SetTooltip(cLink, "Select a character model to replace Link's default model.");
             TooltipBuilder.SetTooltip(cTatl, "Select a color scheme to replace Tatl's default color scheme.");
+            TooltipBuilder.SetTooltip(cGossipHints, "Select a Gossip Stone hint style\n\n - Default: Vanilla Gossip Stone hints.\n - Random: Hints will contain locations of random items.\n - Relevant: Hints will contain locations of items loosely related to the vanilla hint or the area.\n - Competitive: Guaranteed hints about time-consuming checks, 3 hints about locations with logically-required items, 2 hints about locations with no logically-required items.");
         }
 
         #region Forms Code
@@ -323,7 +323,7 @@ namespace MMRando
                 cBottled.Enabled = false;
                 cShop.Enabled = false;
                 cSpoiler.Enabled = false;
-                cGossip.Enabled = false;
+                cGossipHints.Enabled = false;
                 cAdditional.Enabled = false;
                 cUserItems.Enabled = false;
                 cMoonItems.Enabled = false;
@@ -337,7 +337,7 @@ namespace MMRando
                 cBottled.Enabled = onMainTab;
                 cShop.Enabled = onMainTab;
                 cSpoiler.Enabled = onMainTab;
-                cGossip.Enabled = onMainTab;
+                cGossipHints.Enabled = onMainTab;
                 cAdditional.Enabled = onMainTab;
                 cUserItems.Enabled = onMainTab;
                 cMoonItems.Enabled = onMainTab;
@@ -366,6 +366,15 @@ namespace MMRando
                     cMoonItems.Enabled = onMainTab;
                 }
             }
+
+            if (_settings.GossipHintStyle == GossipHintStyle.Default || _settings.LogicMode == LogicMode.Vanilla)
+            {
+                cClearHints.Enabled = false;
+            }
+            else
+            {
+                cClearHints.Enabled = onMainTab;
+            }
         }
 
         private void EnableAllControls(bool v)
@@ -384,8 +393,8 @@ namespace MMRando
             cEnemy.Enabled = v;
             cFloors.Enabled = v;
             cClockSpeed.Enabled = v;
+            cGossipHints.Enabled = v;
             cHideClock.Enabled = v;
-            cGossip.Enabled = v;
             cGravity.Enabled = v;
             cLink.Enabled = v;
             cMixSongs.Enabled = v;
@@ -577,8 +586,9 @@ namespace MMRando
             cQText.Enabled = v;
             cBGM.Enabled = v;
             cFreeHints.Enabled = v;
-            cClearHints.Enabled = v;
             cNoDowngrades.Enabled = v;
+            cClearHints.Enabled = _settings.LogicMode != LogicMode.Vanilla && _settings.GossipHintStyle != GossipHintStyle.Default && v;
+            cGossipHints.Enabled = _settings.LogicMode != LogicMode.Vanilla && v;
 
             cLink.Enabled = v;
 

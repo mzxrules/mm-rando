@@ -98,7 +98,22 @@ namespace MMRando.Templates
             this.Write(this.ToStringHelper.ToStringWithCulture(item.NewLocationName));
             this.Write("\"></span></td>\r\n </tr>\r\n");
  } 
-            this.Write("</table>\r\n<script>\r\n\tvar logic = ");
+            this.Write("</table>\r\n");
+ if (spoiler.GossipHints.Any()) { 
+
+            this.Write("<h2>Gossip Stone Hints</h2>\r\n<table border=\"1\">\r\n\t<tr>\r\n\t\t<th>Gossip Stone</th>\r\n" +
+                    "\t\t<th>Message</th>\r\n\t</tr>\r\n");
+	foreach (var hint in spoiler.GossipHints.OrderBy(h => h.Key.ToString())) { 
+
+            this.Write("\t<tr>\r\n\t\t<td>");
+            this.Write(this.ToStringHelper.ToStringWithCulture(hint.Key));
+            this.Write("</td>\r\n\t\t<td class=\"spoiler\"><span data-content=\"");
+            this.Write(this.ToStringHelper.ToStringWithCulture(hint.Value));
+            this.Write("\"></span></td>\r\n\t</tr>\r\n");
+ } 
+            this.Write("</table>\r\n");
+ } 
+            this.Write("<script>\r\n\tvar logic = ");
             this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.LogicJson));
             this.Write("\r\n\r\n\tfunction all(list, predicate) {\r\n\t\tfor (var i = 0; i < list.length; i++) {\r\n" +
                     "\t\t\tif (!predicate(list[i])) {\r\n\t\t\t\treturn false;\r\n\t\t\t}\r\n\t\t}\r\n\t\treturn true;\r\n\t}\r" +
