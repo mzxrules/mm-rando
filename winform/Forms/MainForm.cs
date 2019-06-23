@@ -192,6 +192,14 @@ namespace MMRando
                 _settings.InputROMFilename = openROM.FileName;
             }
         }
+        private void BUserLogic_Click(object sender, EventArgs e)
+        {
+            if (openLogic.ShowDialog() == DialogResult.OK)
+            {
+                _settings.UserLogicFileName = openLogic.FileName;
+                _settings.LogicMode = LogicMode.UserLogic;
+            }
+        }
 
 
         private void bRandomise_Click(object sender, EventArgs e)
@@ -270,9 +278,6 @@ namespace MMRando
 
         private void cMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //
-            //if (_settings.LogicMode == LogicMode.UserLogic
-            //    && openLogic.ShowDialog() != DialogResult.OK)
         }
 
         private void mExit_Click(object sender, EventArgs e)
@@ -439,6 +444,7 @@ namespace MMRando
             // Input Settings
             BindTextBoxToSetting(tROMName, nameof(_settings.InputROMFilename));
             BindTextBoxToSetting(tSeed, nameof(_settings.Seed));
+            BindTextBoxToSetting(tUserLogic, nameof(_settings.UserLogicFileName));
 
             // Output Settings
             BindCheckboxToSetting(cN64, nameof(_settings.OutputN64ROM));
