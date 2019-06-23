@@ -260,24 +260,12 @@ namespace MMRando
             bgWorker.RunWorkerAsync();
         }
 
-        private void tSeed_Enter(object sender, EventArgs e)
-        {
-        }
-
-        private void tSeed_Leave(object sender, EventArgs e)
-        {
-        }
-
         private void tSeed_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyData == Keys.Enter)
             {
                 cDummy.Select();
             }
-        }
-
-        private void cMode_SelectedIndexChanged(object sender, EventArgs e)
-        {
         }
 
         private void mExit_Click(object sender, EventArgs e)
@@ -550,9 +538,10 @@ namespace MMRando
 
         private void BLoadPatch_Click(object sender, EventArgs e)
         {
-            openPatch.ShowDialog();
-            _settings.InputPatchFilename = openPatch.FileName;
-            tPatch.Text = _settings.InputPatchFilename;
+            if (openPatch.ShowDialog() == DialogResult.OK)
+            {
+                _settings.InputPatchFilename = openPatch.FileName;
+            }
         }
 
         private void ttOutput_Changed(object sender, EventArgs e)
@@ -598,7 +587,6 @@ namespace MMRando
             if (!v)
             {
                 _settings.InputPatchFilename = null;
-                tPatch.Text = null;
             }
         }
     }

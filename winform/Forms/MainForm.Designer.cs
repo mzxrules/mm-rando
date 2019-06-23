@@ -1075,9 +1075,7 @@ namespace MMRando
             this.tSeed.Name = "tSeed";
             this.tSeed.Size = new System.Drawing.Size(298, 20);
             this.tSeed.TabIndex = 1;
-            this.tSeed.Enter += new System.EventHandler(this.tSeed_Enter);
             this.tSeed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tSeed_KeyDown);
-            this.tSeed.Leave += new System.EventHandler(this.tSeed_Leave);
             // 
             // lSeed
             // 
