@@ -119,12 +119,12 @@
   </resheader>
   <data name="lUsage.Text" xml:space="preserve">
     <value>The process should be simple:
-1. Choose your desired settings
-2. Open your ROM
+1. Select your ROM
+2. Choose your desired settings
 3. Click "Randomise"
 
 The program takes as input a Majora's Mask (U) ROM (N64 version). This is currently the only supported ROM version, there are no plans for further support at this time.
-The ROM must be the original compressed version (32MB) in big endian format (.z64).
+The ROM must be the original compressed version (32MB).
 
 The output will be a 32MB compressed N64 ROM and optionally a Wii VC channel that can be installed via homebrew. ROM compression is done in parallel and will use a lot of CPU, so keep this in mind while running the program. This will be the majority of the program's run time, though it should not take very long to complete.
 
