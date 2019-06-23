@@ -43,6 +43,7 @@
             this.columnHeader1});
             this.lItems.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lItems.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lItems.HideSelection = false;
             this.lItems.Location = new System.Drawing.Point(3, 3);
             this.lItems.Name = "lItems";
             this.lItems.Size = new System.Drawing.Size(332, 447);
