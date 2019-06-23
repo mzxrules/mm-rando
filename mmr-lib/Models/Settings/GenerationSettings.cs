@@ -104,12 +104,12 @@ namespace MMRando.Models
         /// <summary>
         /// Gossip stones give hints on where to find items, and sometimes junk
         /// </summary>
-        public bool EnableGossipHints
+        public GossipHintStyle GossipHintStyle
         {
-            get => enableGossipHints;
-            set => SetField(ref enableGossipHints, value);
+            get => gossipHintStyle;
+            set => SetField(ref gossipHintStyle, value);
         }
-        private bool enableGossipHints = true;
+        private GossipHintStyle gossipHintStyle = GossipHintStyle.Default;
 
         /// <summary>
         /// FrEe HiNtS FoR WeNiEs

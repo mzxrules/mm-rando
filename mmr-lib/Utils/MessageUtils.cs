@@ -90,7 +90,7 @@ namespace MMRando.Utils
                         continue;
                     }
 
-                    if (!randomizedResult.Settings.AddOther && ItemUtils.IsOtherItem(item.ID))
+                    if (!randomizedResult.Settings.AddOtherItems && ItemUtils.IsOtherItem(item.ID))
                     {
                         continue;
                     }

@@ -469,7 +469,6 @@ namespace MMRando
             BindCheckboxToSetting(cShop, nameof(_settings.AddShopItems));
             BindCheckboxToSetting(cBottled, nameof(_settings.RandomizeBottleCatchContents));
             BindCheckboxToSetting(cSoS, nameof(_settings.ExcludeSongOfSoaring));
-            BindCheckboxToSetting(cGossip, nameof(_settings.EnableGossipHints));
             BindCheckboxToSetting(cDEnt, nameof(_settings.RandomizeDungeonEntrances));
             BindCheckboxToSetting(cAdditional, nameof(_settings.AddOtherItems));
             BindCheckboxToSetting(cEnemy, nameof(_settings.RandomizeEnemies));
@@ -495,6 +494,7 @@ namespace MMRando
             BindComboBoxToEnumSetting(cGravity, nameof(_settings.MovementMode), MovementMode.Default);
             BindComboBoxToEnumSetting(cFloors, nameof(_settings.FloorType), FloorType.Default);
             BindComboBoxToEnumSetting(cClockSpeed, nameof(_settings.ClockSpeed), ClockSpeed.Default);
+            BindComboBoxToEnumSetting(cGossipHints, nameof(_settings.GossipHintStyle), GossipHintStyle.Default);
 
             bTunic.DataBindings.Add("BackColor", settingsBindingSource, nameof(_settings.TunicColor), true, DataSourceUpdateMode.OnPropertyChanged);
             settingsBindingSource.DataSource = _settings;
