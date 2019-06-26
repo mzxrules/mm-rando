@@ -197,7 +197,7 @@ namespace MMRando
             if (openLogic.ShowDialog() == DialogResult.OK)
             {
                 _settings.UserLogicFileName = openLogic.FileName;
-                _settings.LogicMode = LogicMode.UserLogic;
+                _settings.LogicMode = LogicMode.User;
             }
         }
 
@@ -415,17 +415,7 @@ namespace MMRando
 
         private void InitializeSettings()
         {
-            var settingsPath = "settings.json";
-            if (File.Exists(settingsPath))
-            {
-                var json = File.ReadAllText(settingsPath);
-                var settings = JsonConvert.DeserializeObject<Settings>(json);
-                _settings = settings;
-            }
-            else
-            {
-                _settings = new Settings();
-            }
+            _settings = Settings.LoadFromFile("settings.json");
         }
 
         private void SaveSettings()

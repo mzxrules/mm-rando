@@ -18,8 +18,8 @@ namespace MMRando.Utils
             var json = Resources.GetTextFile("sequences.json");
             List<SequenceInfo> sequences = JsonConvert.DeserializeObject<List<SequenceInfo>>(json);
 
-            var song_of_time = sequences.Single(x => x.Name == "mmr-f-sot");
-            song_of_time.Replaces = 0x33;
+            var songOfTime = sequences.Single(x => x.Name == "mmr-f-sot");
+            songOfTime.Replaces = 0x33;
 
             return sequences;
         }

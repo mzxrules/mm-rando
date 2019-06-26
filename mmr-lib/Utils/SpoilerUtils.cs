@@ -56,17 +56,17 @@ namespace MMRando.Utils
 
             if (settings.OutputHTMLSpoiler)
             {
-                filename += "_SpoilerLog.html";
-                using (StreamWriter newlog = new StreamWriter(Path.Combine(directory, filename)))
+                string spoilerFilename = $"{filename}_Spoiler.html";
+                using (StreamWriter newlog = new StreamWriter(Path.Combine(directory, spoilerFilename)))
                 {
                     Templates.HtmlSpoiler htmlspoiler = new Templates.HtmlSpoiler(spoiler);
                     newlog.Write(htmlspoiler.TransformText());
                 }
             }
-            else
+            if (settings.OutputTextSpoiler)
             {
-                filename += "_SpoilerLog.txt";
-                CreateTextSpoilerLog(spoiler, Path.Combine(directory, filename));
+                string spoilerFilename = $"{filename}_Spoiler.txt";
+                CreateTextSpoilerLog(spoiler, Path.Combine(directory, spoilerFilename));
             }
         }
 

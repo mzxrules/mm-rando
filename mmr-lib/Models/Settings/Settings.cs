@@ -1,9 +1,7 @@
-﻿using MMRando.Utils;
-using Newtonsoft.Json;
-using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
+using System.IO;
 
 namespace MMRando.Models
 {
@@ -160,7 +158,7 @@ namespace MMRando.Models
         /// <summary>
         /// Checks if the InputROM is needed for generation
         /// </summary>
-        public bool NeedInputROM => ApplyPatch | OutputGame | OutputROMPatch;
+        public bool NeedInputROM => ApplyPatch || OutputGame || OutputROMPatch;
 
         /// <summary>
         /// Stores the byte order of the rom
@@ -318,6 +316,25 @@ namespace MMRando.Models
         public override string ToString()
         {
             return "Settings";
+        }
+
+        public static Settings LoadFromFile(string filename)
+        {
+            if (!File.Exists(filename))
+            {
+                return new Settings();
+            }
+
+            var json = File.ReadAllText(filename);
+            var jsonSettings = new JsonSerializerSettings
+            {
+                Error = delegate (object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+                {
+                    System.Diagnostics.Debug.WriteLine(args.ErrorContext.Error.Message);
+                    args.ErrorContext.Handled = true;
+                },
+            };
+            return JsonConvert.DeserializeObject<Settings>(json, jsonSettings);
         }
     }
 }

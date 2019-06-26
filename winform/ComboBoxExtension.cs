@@ -18,7 +18,7 @@ namespace MMRando
                     Description = (Attribute.GetCustomAttribute(value.GetType().GetField(value.ToString()), typeof(DescriptionAttribute)) as DescriptionAttribute)?.Description ?? value.ToString(),
                     Value = value
                 })
-                .OrderBy(item => item.Value.ToString())
+                .OrderBy(item => item.Value)
                 .ToList();
 
             comboBox.DataSource = list;

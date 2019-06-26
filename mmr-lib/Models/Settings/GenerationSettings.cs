@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace MMRando.Models
@@ -160,7 +161,7 @@ namespace MMRando.Models
 
         public void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
         {
-            System.Diagnostics.Debug.WriteLine($"Update {propertyName}: {field} -> {value}");
+            Debug.WriteLine($"Update {propertyName}: {field} -> {value}");
             if (!EqualityComparer<T>.Default.Equals(field, value))
             {
                 field = value;

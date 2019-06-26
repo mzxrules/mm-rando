@@ -324,7 +324,7 @@ namespace MMRando
 
             if (_settings.LogicMode == LogicMode.Casual
                 || _settings.LogicMode == LogicMode.Glitched
-                || _settings.LogicMode == LogicMode.UserLogic)
+                || _settings.LogicMode == LogicMode.User)
             {
                 string[] data = ReadRulesetFromResources();
                 PopulateItemListFromLogicData(data);
@@ -491,7 +491,7 @@ namespace MMRando
             {
                 lines = Resources.GetTextFile("REQ_GLITCH.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             }
-            else if (mode == LogicMode.UserLogic)
+            else if (mode == LogicMode.User)
             {
                 using (StreamReader Req = new StreamReader(File.Open(_settings.UserLogicFileName, FileMode.Open)))
                 {

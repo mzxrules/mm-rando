@@ -4,15 +4,15 @@ namespace MMRando.Models
 {
     public enum LogicMode
     {
-        [Description("Casual")]
+        [Description("Casual Logic")]
         Casual,
         [Description("Glitched Logic")]
         Glitched,
-        [Description("Vanilla Logic")]
-        Vanilla,
         [Description("User Logic")]
-        UserLogic,
+        User,
         [Description("No Logic")]
-        NoLogic,
+        None,
+        [Description("Vanilla Item Placement")]
+        Vanilla,
     }
 }

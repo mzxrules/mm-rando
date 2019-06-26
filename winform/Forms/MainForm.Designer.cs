@@ -51,7 +51,7 @@ namespace MMRando
             this.bUserLogic = new System.Windows.Forms.Button();
             this.cMoonItems = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lBeta = new System.Windows.Forms.Label();
             this.cAdditional = new System.Windows.Forms.CheckBox();
             this.cSoS = new System.Windows.Forms.CheckBox();
             this.cMixSongs = new System.Windows.Forms.CheckBox();
@@ -78,7 +78,7 @@ namespace MMRando
             this.cGravity = new System.Windows.Forms.ComboBox();
             this.tabComfort = new System.Windows.Forms.TabPage();
             this.cGossipHints = new System.Windows.Forms.ComboBox();
-            this.label10 = new System.Windows.Forms.Label();
+            this.lGossip = new System.Windows.Forms.Label();
             this.cNoDowngrades = new System.Windows.Forms.CheckBox();
             this.cNoMusic = new System.Windows.Forms.CheckBox();
             this.cClearHints = new System.Windows.Forms.CheckBox();
@@ -306,7 +306,7 @@ namespace MMRando
             this.tabMain.Controls.Add(this.bUserLogic);
             this.tabMain.Controls.Add(this.cMoonItems);
             this.tabMain.Controls.Add(this.label3);
-            this.tabMain.Controls.Add(this.label2);
+            this.tabMain.Controls.Add(this.lBeta);
             this.tabMain.Controls.Add(this.cAdditional);
             this.tabMain.Controls.Add(this.cSoS);
             this.tabMain.Controls.Add(this.cUserItems);
@@ -370,15 +370,15 @@ namespace MMRando
             this.label3.TabIndex = 14;
             this.label3.Text = "BETA - Use at your own risk!";
             // 
-            // label2
+            // lBeta
             // 
-            this.label2.AutoSize = true;
-            this.label2.ForeColor = System.Drawing.SystemColors.ActiveBorder;
-            this.label2.Location = new System.Drawing.Point(10, 225);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(325, 13);
-            this.label2.TabIndex = 14;
-            this.label2.Text = "_____________________________________________________";
+            this.lBeta.AutoSize = true;
+            this.lBeta.ForeColor = System.Drawing.SystemColors.ActiveBorder;
+            this.lBeta.Location = new System.Drawing.Point(10, 225);
+            this.lBeta.Name = "lBeta";
+            this.lBeta.Size = new System.Drawing.Size(325, 13);
+            this.lBeta.TabIndex = 14;
+            this.lBeta.Text = "_____________________________________________________";
             // 
             // cAdditional
             // 
@@ -638,12 +638,6 @@ namespace MMRando
             // 
             this.cFloors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cFloors.FormattingEnabled = true;
-            this.cFloors.Items.AddRange(new object[] {
-            "Default",
-            "Sand",
-            "Ice",
-            "Snow",
-            "Random"});
             this.cFloors.Location = new System.Drawing.Point(127, 149);
             this.cFloors.Name = "cFloors";
             this.cFloors.Size = new System.Drawing.Size(158, 21);
@@ -653,13 +647,6 @@ namespace MMRando
             // 
             this.cDType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cDType.FormattingEnabled = true;
-            this.cDType.Items.AddRange(new object[] {
-            "Default",
-            "Fire",
-            "Ice",
-            "Shock",
-            "Knockdown",
-            "Random"});
             this.cDType.Location = new System.Drawing.Point(127, 95);
             this.cDType.Name = "cDType";
             this.cDType.Size = new System.Drawing.Size(158, 21);
@@ -669,12 +656,6 @@ namespace MMRando
             // 
             this.cDMult.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cDMult.FormattingEnabled = true;
-            this.cDMult.Items.AddRange(new object[] {
-            "Default",
-            "2x",
-            "4x",
-            "1-hit KO",
-            "Doom"});
             this.cDMult.Location = new System.Drawing.Point(127, 68);
             this.cDMult.Name = "cDMult";
             this.cDMult.Size = new System.Drawing.Size(158, 21);
@@ -684,12 +665,6 @@ namespace MMRando
             // 
             this.cGravity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cGravity.FormattingEnabled = true;
-            this.cGravity.Items.AddRange(new object[] {
-            "Default",
-            "High speed (many softlocks)",
-            "Super low gravity",
-            "Low gravity",
-            "High gravity"});
             this.cGravity.Location = new System.Drawing.Point(127, 122);
             this.cGravity.Name = "cGravity";
             this.cGravity.Size = new System.Drawing.Size(158, 21);
@@ -698,7 +673,7 @@ namespace MMRando
             // tabComfort
             // 
             this.tabComfort.Controls.Add(this.cGossipHints);
-            this.tabComfort.Controls.Add(this.label10);
+            this.tabComfort.Controls.Add(this.lGossip);
             this.tabComfort.Controls.Add(this.cNoDowngrades);
             this.tabComfort.Controls.Add(this.cNoMusic);
             this.tabComfort.Controls.Add(this.cClearHints);
@@ -724,29 +699,22 @@ namespace MMRando
             // 
             this.cGossipHints.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cGossipHints.FormattingEnabled = true;
-            this.cGossipHints.Items.AddRange(new object[] {
-            "Default",
-            "Dark",
-            "Hot",
-            "Cool",
-            "Random",
-            "Rainbow (cycle)"});
             this.cGossipHints.Location = new System.Drawing.Point(234, 109);
             this.cGossipHints.Name = "cGossipHints";
             this.cGossipHints.Size = new System.Drawing.Size(106, 21);
             this.cGossipHints.TabIndex = 20;
             // 
-            // label10
+            // lGossip
             // 
-            this.label10.AutoSize = true;
-            this.label10.BackColor = System.Drawing.Color.Transparent;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.ForeColor = System.Drawing.Color.Black;
-            this.label10.Location = new System.Drawing.Point(159, 112);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(69, 13);
-            this.label10.TabIndex = 19;
-            this.label10.Text = "Gossip Hints:";
+            this.lGossip.AutoSize = true;
+            this.lGossip.BackColor = System.Drawing.Color.Transparent;
+            this.lGossip.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lGossip.ForeColor = System.Drawing.Color.Black;
+            this.lGossip.Location = new System.Drawing.Point(159, 112);
+            this.lGossip.Name = "lGossip";
+            this.lGossip.Size = new System.Drawing.Size(69, 13);
+            this.lGossip.TabIndex = 19;
+            this.lGossip.Text = "Gossip Hints:";
             // 
             // cNoDowngrades
             // 
@@ -1289,7 +1257,7 @@ namespace MMRando
         private System.Windows.Forms.Label lHrule;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lBeta;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox cFreeHints;
@@ -1315,7 +1283,7 @@ namespace MMRando
         private System.Windows.Forms.TextBox tUserLogic;
         private System.Windows.Forms.Button bUserLogic;
         private System.Windows.Forms.ComboBox cGossipHints;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label lGossip;
     }
 }
 
