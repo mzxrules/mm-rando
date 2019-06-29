@@ -297,24 +297,21 @@ namespace MMRando
 
         private void SetTatlColour()
         {
-            if (_settings.TatlColorSchema == TatlColorSchema.Rainbow)
+            for (int i = 0; i < 10; i++)
             {
-                for (int i = 0; i < 10; i++)
+                byte[] c = new byte[4];
+                Random.NextBytes(c);
+
+                if ((i % 2) == 0)
                 {
-                    byte[] c = new byte[4];
-                    Random.NextBytes(c);
-
-                    if ((i % 2) == 0)
-                    {
-                        c[0] = 0xFF;
-                    }
-                    else
-                    {
-                        c[0] = 0;
-                    }
-
-                    Values.TatlColours[4, i] = BitConverter.ToUInt32(c, 0);
+                    c[0] = 0xFF;
                 }
+                else
+                {
+                    c[0] = 0;
+                }
+
+                Values.TatlColours[4, i] = BitConverter.ToUInt32(c, 0);
             }
         }
 
@@ -1578,16 +1575,20 @@ namespace MMRando
                 }
             }
 
-            worker.ReportProgress(40, "Coloring Tatl...");
+            worker.ReportProgress(40, "Randomizing cosmetics...");
 
             //Randomize tatl colour
-            SetTatlColour();
+
+            if (_settings.TatlColorSchema == TatlColorSchema.Rainbow)
+            {
+                SeedRNG();
+                SetTatlColour();
+            }
 
             //Shuffle BGM
             if (_settings.RandomizeBGM)
             {
-                worker.ReportProgress(45, "Randomizing Music...");
-
+                SeedRNG();
                 ShuffleBGM();
             }
 
