@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MMRando.Models
 {
@@ -313,9 +316,26 @@ namespace MMRando.Models
             return JsonConvert.SerializeObject(settingsObj);
         }
 
+        public byte[] GetGenerationSettingsHash()
+        {
+            string field = GetGenerationSettings();
+            if (!OutputSpoiler)
+            {
+                field += "bad salt by mzxrules";
+            }
+
+            byte[] hash;
+            using (var sha256 = SHA256.Create())
+            {
+                hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(field));
+            }
+            return hash;
+        }
+
         public override string ToString()
         {
-            return "Settings";
+            var hash = GetGenerationSettingsHash();
+            return string.Concat(hash.Select(x => x.ToString("X2")));
         }
 
         public static Settings LoadFromFile(string filename)

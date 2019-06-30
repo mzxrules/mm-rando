@@ -11,8 +11,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace MMRando
 {
@@ -460,19 +458,7 @@ namespace MMRando
             }
             _settings.Seed = seed;
 
-            string field = _settings.GetGenerationSettings();
-            if(!_settings.OutputSpoiler)
-            {
-                field += "bad salt by mzxrules";
-            }
-
-            byte[] hash;
-            using (var sha256 = SHA256.Create())
-            {
-                hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(field));
-            }
-
-            Random = new Random(BitConverter.ToInt32(hash, 8));
+            Random = new Random(BitConverter.ToInt32(_settings.GetGenerationSettingsHash(), 8));
         }
 
         private string[] ReadRulesetFromResources()
