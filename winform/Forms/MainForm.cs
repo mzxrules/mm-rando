@@ -240,7 +240,7 @@ namespace MMRando
             }
             _settings.InputROMFormat = result;
 
-            if (_settings.ApplyPatch && string.IsNullOrWhiteSpace(_settings.InputPatchFilename))
+            if (_settings.ApplyPatch && !File.Exists(_settings.InputPatchFilename))
             {
                 MessageBox.Show("No patch file selected.",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -302,34 +302,21 @@ namespace MMRando
         {
             var onMainTab = ttOutput.SelectedTab.TabIndex == 0;
 
-            if (_settings.LogicMode == LogicMode.Vanilla)
-            {
-                cMixSongs.Enabled = false;
-                cSoS.Enabled = false;
-                cDChests.Enabled = false;
-                cDEnt.Enabled = false;
-                cBottled.Enabled = false;
-                cShop.Enabled = false;
-                cSpoiler.Enabled = false;
-                cGossipHints.Enabled = false;
-                cAdditional.Enabled = false;
-                cUserItems.Enabled = false;
-                cMoonItems.Enabled = false;
-            }
-            else
-            {
-                cMixSongs.Enabled = onMainTab;
-                cSoS.Enabled = onMainTab;
-                cDChests.Enabled = onMainTab;
-                cDEnt.Enabled = onMainTab;
-                cBottled.Enabled = onMainTab;
-                cShop.Enabled = onMainTab;
-                cSpoiler.Enabled = onMainTab;
-                cGossipHints.Enabled = onMainTab;
-                cAdditional.Enabled = onMainTab;
-                cUserItems.Enabled = onMainTab;
-                cMoonItems.Enabled = onMainTab;
-            }
+
+            bool optionsEnabled = (_settings.LogicMode == LogicMode.Vanilla) ? false : onMainTab;
+            
+            cMixSongs.Enabled = optionsEnabled;
+            cSoS.Enabled = optionsEnabled;
+            cDChests.Enabled = optionsEnabled;
+            cDEnt.Enabled = optionsEnabled;
+            cBottled.Enabled = optionsEnabled;
+            cShop.Enabled = optionsEnabled;
+            cSpoiler.Enabled = optionsEnabled;
+            cGossipHints.Enabled = optionsEnabled;
+            cAdditional.Enabled = optionsEnabled;
+            cUserItems.Enabled = optionsEnabled;
+            cMoonItems.Enabled = optionsEnabled;
+            
 
             cHTMLLog.Enabled = onMainTab;
 
@@ -342,17 +329,14 @@ namespace MMRando
                 cAdditional.Enabled = false;
                 cMoonItems.Enabled = false;
             }
-            else
+            else if (_settings.LogicMode != LogicMode.Vanilla)
             {
-                if (_settings.LogicMode != LogicMode.Vanilla)
-                {
-                    cSoS.Enabled = onMainTab;
-                    cDChests.Enabled = onMainTab;
-                    cBottled.Enabled = onMainTab;
-                    cShop.Enabled = onMainTab;
-                    cAdditional.Enabled = onMainTab;
-                    cMoonItems.Enabled = onMainTab;
-                }
+                cSoS.Enabled = onMainTab;
+                cDChests.Enabled = onMainTab;
+                cBottled.Enabled = onMainTab;
+                cShop.Enabled = onMainTab;
+                cAdditional.Enabled = onMainTab;
+                cMoonItems.Enabled = onMainTab;
             }
 
             if (_settings.GossipHintStyle == GossipHintStyle.Default || _settings.LogicMode == LogicMode.Vanilla)
@@ -432,6 +416,7 @@ namespace MMRando
             BindTextBoxToSetting(tROMName, nameof(_settings.InputROMFilename));
             BindTextBoxToSetting(tSeed, nameof(_settings.Seed));
             BindTextBoxToSetting(tUserLogic, nameof(_settings.UserLogicFileName));
+            BindTextBoxToSetting(tPatch, nameof(_settings.InputPatchFilename));
 
             // Output Settings
             BindCheckboxToSetting(cN64, nameof(_settings.OutputN64ROM));
@@ -573,11 +558,6 @@ namespace MMRando
 
             // Other..?
             cDummy.Enabled = v;
-
-            if (!v)
-            {
-                _settings.InputPatchFilename = null;
-            }
         }
     }
 }
