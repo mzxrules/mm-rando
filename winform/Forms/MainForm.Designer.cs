@@ -47,6 +47,8 @@ namespace MMRando
             this.cPatch = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.cStartingItems = new System.Windows.Forms.CheckBox();
+            this.cNutChest = new System.Windows.Forms.CheckBox();
             this.tUserLogic = new System.Windows.Forms.TextBox();
             this.bUserLogic = new System.Windows.Forms.Button();
             this.cMoonItems = new System.Windows.Forms.CheckBox();
@@ -63,6 +65,7 @@ namespace MMRando
             this.lMode = new System.Windows.Forms.Label();
             this.cMode = new System.Windows.Forms.ComboBox();
             this.tabGimmick = new System.Windows.Forms.TabPage();
+            this.cNoStartingItems = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
             this.cHideClock = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -77,8 +80,10 @@ namespace MMRando
             this.cDMult = new System.Windows.Forms.ComboBox();
             this.cGravity = new System.Windows.Forms.ComboBox();
             this.tabComfort = new System.Windows.Forms.TabPage();
-            this.cGossipHints = new System.Windows.Forms.ComboBox();
+            this.cEponaSword = new System.Windows.Forms.CheckBox();
+            this.cShopAppearance = new System.Windows.Forms.CheckBox();
             this.lGossip = new System.Windows.Forms.Label();
+            this.cGossipHints = new System.Windows.Forms.ComboBox();
             this.cNoDowngrades = new System.Windows.Forms.CheckBox();
             this.cNoMusic = new System.Windows.Forms.CheckBox();
             this.cClearHints = new System.Windows.Forms.CheckBox();
@@ -123,6 +128,7 @@ namespace MMRando
             this.tpPatchSettings = new System.Windows.Forms.TabPage();
             this.tPatch = new System.Windows.Forms.TextBox();
             this.bLoadPatch = new System.Windows.Forms.Button();
+            this.cUpdateChests = new System.Windows.Forms.CheckBox();
             this.tSettings.SuspendLayout();
             this.tabROMSettings.SuspendLayout();
             this.tabMain.SuspendLayout();
@@ -302,6 +308,8 @@ namespace MMRando
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.cStartingItems);
+            this.tabMain.Controls.Add(this.cNutChest);
             this.tabMain.Controls.Add(this.tUserLogic);
             this.tabMain.Controls.Add(this.bUserLogic);
             this.tabMain.Controls.Add(this.cMoonItems);
@@ -325,6 +333,34 @@ namespace MMRando
             this.tabMain.TabIndex = 0;
             this.tabMain.Text = "Main Settings";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // cStartingItems
+            // 
+            this.cStartingItems.AutoSize = true;
+            this.cStartingItems.BackColor = System.Drawing.Color.Transparent;
+            this.cStartingItems.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cStartingItems.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cStartingItems.ForeColor = System.Drawing.Color.Black;
+            this.cStartingItems.Location = new System.Drawing.Point(23, 170);
+            this.cStartingItems.Name = "cStartingItems";
+            this.cStartingItems.Size = new System.Drawing.Size(119, 17);
+            this.cStartingItems.TabIndex = 17;
+            this.cStartingItems.Text = "Crazy Starting Items";
+            this.cStartingItems.UseVisualStyleBackColor = false;
+            // 
+            // cNutChest
+            // 
+            this.cNutChest.AutoSize = true;
+            this.cNutChest.BackColor = System.Drawing.Color.Transparent;
+            this.cNutChest.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cNutChest.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cNutChest.ForeColor = System.Drawing.Color.Black;
+            this.cNutChest.Location = new System.Drawing.Point(162, 170);
+            this.cNutChest.Name = "cNutChest";
+            this.cNutChest.Size = new System.Drawing.Size(144, 17);
+            this.cNutChest.TabIndex = 16;
+            this.cNutChest.Text = "Pre-Clocktown Deku Nut";
+            this.cNutChest.UseVisualStyleBackColor = false;
             // 
             // tUserLogic
             // 
@@ -515,6 +551,7 @@ namespace MMRando
             // 
             // tabGimmick
             // 
+            this.tabGimmick.Controls.Add(this.cNoStartingItems);
             this.tabGimmick.Controls.Add(this.label7);
             this.tabGimmick.Controls.Add(this.cHideClock);
             this.tabGimmick.Controls.Add(this.label6);
@@ -534,6 +571,20 @@ namespace MMRando
             this.tabGimmick.TabIndex = 2;
             this.tabGimmick.Text = "Gimmicks";
             this.tabGimmick.UseVisualStyleBackColor = true;
+            // 
+            // cNoStartingItems
+            // 
+            this.cNoStartingItems.AutoSize = true;
+            this.cNoStartingItems.BackColor = System.Drawing.Color.Transparent;
+            this.cNoStartingItems.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cNoStartingItems.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cNoStartingItems.ForeColor = System.Drawing.Color.Black;
+            this.cNoStartingItems.Location = new System.Drawing.Point(178, 224);
+            this.cNoStartingItems.Name = "cNoStartingItems";
+            this.cNoStartingItems.Size = new System.Drawing.Size(107, 17);
+            this.cNoStartingItems.TabIndex = 19;
+            this.cNoStartingItems.Text = "No Starting Items";
+            this.cNoStartingItems.UseVisualStyleBackColor = false;
             // 
             // label7
             // 
@@ -672,8 +723,11 @@ namespace MMRando
             // 
             // tabComfort
             // 
-            this.tabComfort.Controls.Add(this.cGossipHints);
+            this.tabComfort.Controls.Add(this.cUpdateChests);
+            this.tabComfort.Controls.Add(this.cEponaSword);
+            this.tabComfort.Controls.Add(this.cShopAppearance);
             this.tabComfort.Controls.Add(this.lGossip);
+            this.tabComfort.Controls.Add(this.cGossipHints);
             this.tabComfort.Controls.Add(this.cNoDowngrades);
             this.tabComfort.Controls.Add(this.cNoMusic);
             this.tabComfort.Controls.Add(this.cClearHints);
@@ -694,6 +748,34 @@ namespace MMRando
             this.tabComfort.TabIndex = 1;
             this.tabComfort.Text = "Comfort/Cosmetics";
             this.tabComfort.UseVisualStyleBackColor = true;
+            // 
+            // cEponaSword
+            // 
+            this.cEponaSword.AutoSize = true;
+            this.cEponaSword.BackColor = System.Drawing.Color.Transparent;
+            this.cEponaSword.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cEponaSword.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cEponaSword.ForeColor = System.Drawing.Color.Black;
+            this.cEponaSword.Location = new System.Drawing.Point(18, 231);
+            this.cEponaSword.Name = "cEponaSword";
+            this.cEponaSword.Size = new System.Drawing.Size(106, 17);
+            this.cEponaSword.TabIndex = 22;
+            this.cEponaSword.Text = "Fix Epona Sword";
+            this.cEponaSword.UseVisualStyleBackColor = false;
+            // 
+            // cShopAppearance
+            // 
+            this.cShopAppearance.AutoSize = true;
+            this.cShopAppearance.BackColor = System.Drawing.Color.Transparent;
+            this.cShopAppearance.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cShopAppearance.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cShopAppearance.ForeColor = System.Drawing.Color.Black;
+            this.cShopAppearance.Location = new System.Drawing.Point(32, 184);
+            this.cShopAppearance.Name = "cShopAppearance";
+            this.cShopAppearance.Size = new System.Drawing.Size(92, 17);
+            this.cShopAppearance.TabIndex = 21;
+            this.cShopAppearance.Text = "Update shops";
+            this.cShopAppearance.UseVisualStyleBackColor = false;
             // 
             // cGossipHints
             // 
@@ -1149,6 +1231,20 @@ namespace MMRando
             this.bLoadPatch.UseVisualStyleBackColor = true;
             this.bLoadPatch.Click += new System.EventHandler(this.BLoadPatch_Click);
             // 
+            // cUpdateChests
+            // 
+            this.cUpdateChests.AutoSize = true;
+            this.cUpdateChests.BackColor = System.Drawing.Color.Transparent;
+            this.cUpdateChests.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cUpdateChests.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cUpdateChests.ForeColor = System.Drawing.Color.Black;
+            this.cUpdateChests.Location = new System.Drawing.Point(29, 208);
+            this.cUpdateChests.Name = "cUpdateChests";
+            this.cUpdateChests.Size = new System.Drawing.Size(95, 17);
+            this.cUpdateChests.TabIndex = 23;
+            this.cUpdateChests.Text = "Update chests";
+            this.cUpdateChests.UseVisualStyleBackColor = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1284,6 +1380,12 @@ namespace MMRando
         private System.Windows.Forms.Button bUserLogic;
         private System.Windows.Forms.ComboBox cGossipHints;
         private System.Windows.Forms.Label lGossip;
+        private System.Windows.Forms.CheckBox cShopAppearance;
+        private System.Windows.Forms.CheckBox cNutChest;
+        private System.Windows.Forms.CheckBox cStartingItems;
+        private System.Windows.Forms.CheckBox cNoStartingItems;
+        private System.Windows.Forms.CheckBox cEponaSword;
+        private System.Windows.Forms.CheckBox cUpdateChests;
     }
 }
 

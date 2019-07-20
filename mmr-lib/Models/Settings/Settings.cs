@@ -206,6 +206,37 @@ namespace MMRando.Models
             set => SetField(ref preventDowngrades, value);
         }
         private bool preventDowngrades = true;
+
+        /// <summary>
+        /// Updates shop models and text
+        /// </summary>
+        public bool UpdateShopAppearance
+        {
+            get => updateShopAppearance;
+            set => SetField(ref updateShopAppearance, value);
+        }
+        private bool updateShopAppearance = true;
+
+        /// <summary>
+        /// Updates chest appearance to match contents
+        /// </summary>
+        public bool UpdateChests
+        { 
+            get => updateChests;
+            set => SetField(ref updateChests, value);
+        }
+        private bool updateChests = true;
+
+        /// <summary>
+        /// Change epona B button behavior to prevent player losing sword if they don't have a bow.
+        /// </summary>
+        public bool FixEponaSword
+        {
+            get => fixEponaSword;
+            set => SetField(ref fixEponaSword, value);
+        }
+        private bool fixEponaSword = true;
+
         #endregion
 
         #region Gimmicks

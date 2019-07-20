@@ -57,7 +57,7 @@ namespace MMRando
             TooltipBuilder.SetTooltip(cPatch, "Output a patch file that can be applied using the Patch settings tab to reproduce the same ROM.\nPatch file includes all settings except Tunic and Tatl color.");
 
             // Main Settings
-            TooltipBuilder.SetTooltip(cMode, "Select mode of logic:\n - Casual/glitchless: The randomization logic ensures that no glitches are required to beat the game.\n - Using glitches: The randomization logic allows for placement of items that are only obtainable using known glitches.\n - Vanilla Layout: All items are left vanilla.\n - User logic: Upload your own custom logic to be used in the randomization.\n - No logic: Completely random, no guarantee the game is beatable.");
+            TooltipBuilder.SetTooltip(cMode, "Select mode of logic:\n - Casual: The randomization logic ensures that the game can be beaten casually.\n - Using glitches: The randomization logic allows for placement of items that are only obtainable using known glitches.\n - Vanilla Layout: All items are left vanilla.\n - User logic: Upload your own custom logic to be used in the randomization.\n - No logic: Completely random, no guarantee the game is beatable.");
 
             TooltipBuilder.SetTooltip(cUserItems, "Only randomize a custom list of items.\n\nThe item list can be edited from the menu: Customize -> Item List Editor. When checked, some settings will become disabled.");
             TooltipBuilder.SetTooltip(cMixSongs, "Enable songs being placed among items in the randomization pool.");
@@ -68,7 +68,9 @@ namespace MMRando
             TooltipBuilder.SetTooltip(cDEnt, "Enable randomization of dungeon entrances. \n\nStone Tower Temple is always vanilla, but Inverted Stone Tower Temple is randomized.");
             TooltipBuilder.SetTooltip(cAdditional, "Enable miscellaneous items being placed in the randomization pool.\n\nAmong the miscellaneous items are:\nFreestanding heartpieces, overworld chests, (hidden) grotto chests, Tingle's maps and bank heartpiece.");
             TooltipBuilder.SetTooltip(cEnemy, "Enable randomization of enemies. May cause softlocks in some circumstances, use at your own risk.");
-            TooltipBuilder.SetTooltip(cMoonItems, "Enable moon items being placed in the randomization pool.\n\nIncludes the four Moon Trial Heart Pieces and the Fierce Deity's Mask.");
+            TooltipBuilder.SetTooltip(cMoonItems, "Enable moon items being placed in the randomization pool.\n\nIncludes the four Moon Trial Heart Pieces, Fierce Deity's Mask and the two Link Trial chests.");
+            TooltipBuilder.SetTooltip(cNutChest, "Enable randomization of the pre-clocktown deku nut chest. Not available when using Casual logic.");
+            TooltipBuilder.SetTooltip(cStartingItems, "Enable randomization of starting Sword, Shield, and two Heart Containers.");
 
             // Gimmicks
             TooltipBuilder.SetTooltip(cDMult, "Select a damage mode, affecting how much damage Link takes:\n\n - Default: Link takes normal damage.\n - 2x: Link takes double damage.\n - 4x: Link takes quadruple damage.\n - 1-hit KO: Any damage kills Link.\n - Doom: Hardcore mode. Link's hearts are slowly being drained continuously.");
@@ -77,6 +79,7 @@ namespace MMRando
             TooltipBuilder.SetTooltip(cFloors, "Select a floortype for every floor ingame:\n\n - Default: Vanilla floortypes.\n - Sand: Link sinks slowly into every floor, affecting movement speed.\n - Ice: Every floor is slippery.\n - Snow: Similar to sand. \n - Random: Any random floortypes of the above.");
             TooltipBuilder.SetTooltip(cClockSpeed, "Modify the speed of time.");
             TooltipBuilder.SetTooltip(cHideClock, "Clock UI will be hidden.");
+            TooltipBuilder.SetTooltip(cNoStartingItems, "You will not start with any randomized starting items.");
 
             // Comforts/cosmetics
             TooltipBuilder.SetTooltip(cCutsc, "Enable shortened cutscenes.\n\nCertain cutscenes are skipped or otherwise shortened.\nDISCLAIMER: This may cause crashing in certain emulators.");
@@ -86,6 +89,9 @@ namespace MMRando
             TooltipBuilder.SetTooltip(cFreeHints, "Enable reading gossip stone hints without requiring the Mask of Truth.");
             TooltipBuilder.SetTooltip(cClearHints, "Gossip stone hints will give clear item and location names.");
             TooltipBuilder.SetTooltip(cNoDowngrades, "Downgrading items will be prevented.");
+            TooltipBuilder.SetTooltip(cShopAppearance, "Shops models and text will be updated to match the item they give.");
+            TooltipBuilder.SetTooltip(cUpdateChests, "Chest appearance will be updated to match the item they contain.");
+            TooltipBuilder.SetTooltip(cEponaSword, "Change Epona's B button behavior to prevent you from losing your sword if you don't have a bow.\nMay affect vanilla glitches that use Epona's B button.");
             TooltipBuilder.SetTooltip(bTunic, "Select the color of Link's Tunic.");
             TooltipBuilder.SetTooltip(cLink, "Select a character model to replace Link's default model.");
             TooltipBuilder.SetTooltip(cTatl, "Select a color scheme to replace Tatl's default color scheme.");
@@ -316,7 +322,10 @@ namespace MMRando
             cAdditional.Enabled = optionsEnabled;
             cUserItems.Enabled = optionsEnabled;
             cMoonItems.Enabled = optionsEnabled;
-            
+            cNutChest.Enabled = (_settings.LogicMode == LogicMode.Vanilla) ?
+                false : onMainTab && _settings.LogicMode != LogicMode.Casual;
+            cStartingItems.Enabled = onMainTab;
+            cNoStartingItems.Enabled = onMainTab;
 
             cHTMLLog.Enabled = onMainTab;
 
@@ -328,6 +337,8 @@ namespace MMRando
                 cShop.Enabled = false;
                 cAdditional.Enabled = false;
                 cMoonItems.Enabled = false;
+                cNutChest.Enabled = false;
+                cStartingItems.Enabled = false;
             }
             else if (_settings.LogicMode != LogicMode.Vanilla)
             {
@@ -337,6 +348,9 @@ namespace MMRando
                 cShop.Enabled = onMainTab;
                 cAdditional.Enabled = onMainTab;
                 cMoonItems.Enabled = onMainTab;
+                cNutChest.Enabled = onMainTab && _settings.LogicMode != LogicMode.Casual;
+                cStartingItems.Enabled = onMainTab;
+                cNoStartingItems.Enabled = onMainTab;
             }
 
             if (_settings.GossipHintStyle == GossipHintStyle.Default || _settings.LogicMode == LogicMode.Vanilla)
@@ -380,11 +394,17 @@ namespace MMRando
             cFreeHints.Enabled = v;
             cClearHints.Enabled = v;
             cNoDowngrades.Enabled = v;
+            cShopAppearance.Enabled = v;
+            cEponaSword.Enabled = v;
             cHTMLLog.Enabled = v;
             cN64.Enabled = v;
             cMoonItems.Enabled = v;
+            cNutChest.Enabled = v;
+            cStartingItems.Enabled = v;
+            cNoStartingItems.Enabled = v;
             cPatch.Enabled = v;
             bApplyPatch.Enabled = v;
+            cUpdateChests.Enabled = v;
 
             bopen.Enabled = v;
             bRandomise.Enabled = v;
@@ -461,6 +481,22 @@ namespace MMRando
 
             bTunic.DataBindings.Add("BackColor", settingsBindingSource, nameof(_settings.TunicColor), true, DataSourceUpdateMode.OnPropertyChanged);
             settingsBindingSource.DataSource = _settings;
+
+            /* 
+             cShopAppearance.Checked = _settings.UpdateShopAppearance;
+            cNutChest.Checked = _settings.AddNutChest;
+            cStartingItems.Checked = _settings.CrazyStartingItems;
+            cNoStartingItems.Checked = _settings.NoStartingItems;
+            cEponaSword.Checked = _settings.FixEponaSword;
+            cUpdateChests.Checked = _settings.UpdateChests;
+
+            // UserItems_CheckChanged the (cDChests.Checked = false; stuff)
+            
+            cNutChest.Checked = false;
+
+            cStartingItems.Checked = false;
+
+             */
         }
 
         private void BindCheckboxToSetting(CheckBox checkbox, string property)
@@ -543,6 +579,7 @@ namespace MMRando
             cFloors.Enabled = v;
             cClockSpeed.Enabled = v;
             cHideClock.Enabled = v;
+            cNoStartingItems.Enabled = v;
 
 
             // Comfort/Cosmetics
@@ -551,6 +588,9 @@ namespace MMRando
             cBGM.Enabled = v;
             cFreeHints.Enabled = v;
             cNoDowngrades.Enabled = v;
+            cShopAppearance.Enabled = v;
+            cUpdateChests.Enabled = v;
+            cEponaSword.Enabled = v;
             cClearHints.Enabled = _settings.LogicMode != LogicMode.Vanilla && _settings.GossipHintStyle != GossipHintStyle.Default && v;
             cGossipHints.Enabled = _settings.LogicMode != LogicMode.Vanilla && v;
 

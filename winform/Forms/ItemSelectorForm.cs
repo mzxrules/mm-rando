@@ -277,6 +277,13 @@ namespace MMRando
             "Zora Trial HP",
             "Link Trial HP",
             "Fierce Deity's Mask",
+            "Link Trial 30 Arrows",
+            "Link Trial 10 Bombchu",
+            "Pre-Clocktown 10 Deku Nuts",
+            "Starting Sword",
+            "Starting Shield",
+            "Starting Heart 1",
+            "Starting Heart 2",
         };
 
         private static string[] ITEM_NAMES = DEFAULT_ITEM_NAMES.ToArray();

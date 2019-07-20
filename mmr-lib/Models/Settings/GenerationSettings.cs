@@ -81,6 +81,26 @@ namespace MMRando.Models
         }
         private bool addOtherItems;
 
+        /// <summary>
+        /// Add pre-clocktown nut chest to the randomization pool
+        /// </summary>
+        public bool AddNutChest
+        {
+            get => addNutChest;
+            set => SetField(ref addNutChest, value);
+        }
+        private bool addNutChest;
+
+        /// <summary>
+        /// Add starting sword/shield/heart containers to the randomization pool
+        /// </summary>
+        public bool CrazyStartingItems
+        {
+            get => crazyStartingItems;
+            set => SetField(ref crazyStartingItems, value);
+        }
+        private bool crazyStartingItems;
+
 
         /// <summary>
         /// Randomize the content of a bottle when catching (e.g. catching a fairy puts poe in bottle)
@@ -151,6 +171,18 @@ namespace MMRando.Models
             set => SetField(ref randomizeEnemies, value);
         }
         private bool randomizeEnemies;
+
+
+
+        /// <summary>
+        /// Prevents player starting with any items that are randomized.
+        /// </summary>
+        public bool NoStartingItems
+        {
+            get => noStartingItems;
+            set => SetField(ref noStartingItems, value);
+        }
+        private bool noStartingItems;
 
 
         #region INotifyPropertyChanged
