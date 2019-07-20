@@ -134,6 +134,8 @@ namespace MMRando.Models
                 this.ExcludeSongOfSoaring = false; // cSoS.Checked
                 this.AddOtherItems = false; //cAdditional.Checked
                 this.AddMoonItems = false; //cMoonItems.Checked
+                this.AddNutChest = false; //cNutChest.Checked = false;
+                this.NoStartingItems = false; //cStartingItems.Checked = false;
             }
         }
         private bool useCustomItemList;

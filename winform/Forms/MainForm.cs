@@ -457,6 +457,13 @@ namespace MMRando
             BindCheckboxToSetting(cEnemy, nameof(_settings.RandomizeEnemies));
             BindCheckboxToSetting(cMoonItems, nameof(_settings.AddMoonItems));
 
+            BindCheckboxToSetting(cShopAppearance, nameof(_settings.UpdateShopAppearance));
+            BindCheckboxToSetting(cNutChest, nameof(_settings.AddNutChest));
+            BindCheckboxToSetting(cStartingItems, nameof(_settings.CrazyStartingItems));
+            BindCheckboxToSetting(cNoStartingItems, nameof(_settings.NoStartingItems));
+            BindCheckboxToSetting(cEponaSword, nameof(_settings.FixEponaSword));
+            BindCheckboxToSetting(cUpdateChests, nameof(_settings.UpdateChests));
+
             // Gimmicks
             BindCheckboxToSetting(cHideClock, nameof(_settings.HideClock));
 
@@ -483,18 +490,9 @@ namespace MMRando
             settingsBindingSource.DataSource = _settings;
 
             /* 
-             cShopAppearance.Checked = _settings.UpdateShopAppearance;
-            cNutChest.Checked = _settings.AddNutChest;
-            cStartingItems.Checked = _settings.CrazyStartingItems;
-            cNoStartingItems.Checked = _settings.NoStartingItems;
-            cEponaSword.Checked = _settings.FixEponaSword;
-            cUpdateChests.Checked = _settings.UpdateChests;
 
             // UserItems_CheckChanged the (cDChests.Checked = false; stuff)
             
-            cNutChest.Checked = false;
-
-            cStartingItems.Checked = false;
 
              */
         }
