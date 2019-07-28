@@ -391,6 +391,10 @@ namespace MMRando
             {
                 freeItems.Add(Item.MaskDeku);
                 freeItems.Add(Item.SongHealing);
+                freeItems.Add(Item.StartingSword);
+                freeItems.Add(Item.StartingShield);
+                freeItems.Add(Item.StartingHeartContainer1);
+                freeItems.Add(Item.StartingHeartContainer2);
 
                 if (_settings.ShortenCutscenes)
                 {
@@ -437,7 +441,12 @@ namespace MMRando
                 }
                 else
                 {
-                    ItemSwapUtils.WriteNewItem(item.NewLocation.Value, item.Item, newMessages, _settings.UpdateShopAppearance, _settings.PreventDowngrades, _settings.UpdateChests);
+                    ChestTypeAttribute.ChestType? overrideChestType = null;
+                    if ((item.Item.Name().Contains("Bombchu") || item.Item.Name().Contains("Shield")) && _randomized.Logic.Any(il => il.RequiredItemIds?.Contains(item.ID) == true || il.ConditionalItemIds?.Any(c => c.Contains(item.ID)) == true))
+                    {
+                        overrideChestType = ChestTypeAttribute.ChestType.LargeGold;
+                    }
+                    ItemSwapUtils.WriteNewItem(item.NewLocation.Value, item.Item, newMessages, _settings.UpdateShopAppearance, _settings.PreventDowngrades, _settings.UpdateChests, overrideChestType);
                 }
             }
 

@@ -941,6 +941,17 @@ namespace MMRando
 
         private bool CheckMatch(Item currentItem, Item target)
         {
+            if (ItemUtils.IsStartingLocation(target) && ForbiddenStartingItems.Contains(currentItem))
+            {
+                Debug.WriteLine($"{currentItem} cannot be a starting item.");
+                return false;
+            }
+
+            if (_settings.LogicMode == LogicMode.None)
+            {
+                return true;
+            }
+
             if (ForbiddenPlacedAt.ContainsKey(currentItem)
                 && ForbiddenPlacedAt[currentItem].Contains(target))
             {
@@ -957,12 +968,6 @@ namespace MMRando
             if (currentItem.IsTemporary() && ItemUtils.IsMoonLocation(target))
             {
                 Debug.WriteLine($"{currentItem} cannot be placed on the moon.");
-                return false;
-            }
-
-            if (ItemUtils.IsStartingLocation(target) && ForbiddenStartingItems.Contains(currentItem))
-            {
-                Debug.WriteLine($"{currentItem} cannot be a starting item.");
                 return false;
             }
 
@@ -1483,6 +1488,10 @@ namespace MMRando
         /// </summary>
         private void ApplyCustomItemList()
         {
+            if (_settings.CustomItemList.Contains(-1))
+            {
+                throw new InvalidDataException("Invalid custom item string.");
+            }
             for (int i = 0; i < _settings.CustomItemList.Count; i++)
             {
                 int selectedItem = _settings.CustomItemList[i];

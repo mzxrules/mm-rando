@@ -13,7 +13,7 @@ namespace MMRando
         /// </summary>
         public const int NumberOfAreasAndOther = 23;
 
-        internal static readonly int TotalNumberOfItems = 274; // todo remove this
+        public const int TotalNumberOfItems = 274; // todo remove this
 
     }
 }

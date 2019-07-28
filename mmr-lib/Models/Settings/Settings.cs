@@ -118,29 +118,6 @@ namespace MMRando.Models
         private bool outputHTMLSpoiler = true;
 
         /// <summary>
-        /// Use Custom Item list for the logic.
-        /// </summary>
-        public bool UseCustomItemList
-        {
-            get => useCustomItemList;
-            set
-            {
-                SetField(ref useCustomItemList, value);
-
-                //Todo: enable/disable ui elements instead, then have a "validate" stage for generating settings
-                this.AddDungeonItems = false; // cDChests.Checked
-                this.AddShopItems = false; // cShop.Checked
-                this.RandomizeBottleCatchContents = false; //cBottled.Checked
-                this.ExcludeSongOfSoaring = false; // cSoS.Checked
-                this.AddOtherItems = false; //cAdditional.Checked
-                this.AddMoonItems = false; //cMoonItems.Checked
-                this.AddNutChest = false; //cNutChest.Checked = false;
-                this.NoStartingItems = false; //cStartingItems.Checked = false;
-            }
-        }
-        private bool useCustomItemList;
-
-        /// <summary>
         /// Generate patch file
         /// </summary>
         public bool OutputROMPatch

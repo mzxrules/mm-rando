@@ -37,12 +37,16 @@ namespace MMRando
             InitializeComponent();
             InitializeSettings();
             InitializeTooltips();
-            BindProperties();
 
-            ItemEditor = new ItemEditForm(_settings);
+            ItemEditor = new ItemEditForm();
+            //ItemEditor.FormClosing += ItemEditor_FormClosing;
+            //UpdateCustomItemAmountLabel();
             LogicEditor = new LogicEditorForm();
             Manual = new ManualForm();
             About = new AboutForm();
+
+            ItemEditor.InitializeSettings(_settings);
+            BindProperties();
 
             Text = AssemblyVersion;
         }
@@ -70,7 +74,7 @@ namespace MMRando
             TooltipBuilder.SetTooltip(cEnemy, "Enable randomization of enemies. May cause softlocks in some circumstances, use at your own risk.");
             TooltipBuilder.SetTooltip(cMoonItems, "Enable moon items being placed in the randomization pool.\n\nIncludes the four Moon Trial Heart Pieces, Fierce Deity's Mask and the two Link Trial chests.");
             TooltipBuilder.SetTooltip(cNutChest, "Enable randomization of the pre-clocktown deku nut chest. Not available when using Casual logic.");
-            TooltipBuilder.SetTooltip(cStartingItems, "Enable randomization of starting Sword, Shield, and two Heart Containers.");
+            TooltipBuilder.SetTooltip(cCrazyStartingItems, "Enable randomization of starting Sword, Shield, and two Heart Containers.");
 
             // Gimmicks
             TooltipBuilder.SetTooltip(cDMult, "Select a damage mode, affecting how much damage Link takes:\n\n - Default: Link takes normal damage.\n - 2x: Link takes double damage.\n - 4x: Link takes quadruple damage.\n - 1-hit KO: Any damage kills Link.\n - Doom: Hardcore mode. Link's hearts are slowly being drained continuously.");
@@ -273,6 +277,29 @@ namespace MMRando
                 cDummy.Select();
             }
         }
+        private void cUserItems_CheckedChanged(object sender, EventArgs e)
+        {
+
+            cDChests.Visible = !cUserItems.Checked;
+
+            cShop.Visible = !cUserItems.Checked;
+
+            cBottled.Visible = !cUserItems.Checked;
+
+            cSoS.Visible = !cUserItems.Checked;
+
+            cAdditional.Visible = !cUserItems.Checked;
+
+            cMoonItems.Visible = !cUserItems.Checked;
+
+            cNutChest.Visible = !cUserItems.Checked;
+
+            cCrazyStartingItems.Visible = !cUserItems.Checked;
+
+            bItemListEditor.Visible = cUserItems.Checked;
+            tCustomItemList.Visible = cUserItems.Checked;
+            lCustomItemAmount.Visible = cUserItems.Checked;
+        }
 
         private void mExit_Click(object sender, EventArgs e)
         {
@@ -294,9 +321,33 @@ namespace MMRando
             LogicEditor.Show();
         }
 
-        private void mItemIncl_Click(object sender, EventArgs e)
+        private void bItemListEditor_Click(object sender, EventArgs e)
         {
             ItemEditor.Show();
+        }
+
+        private void tCustomItemList_TextChanged(object sender, EventArgs e)
+        {
+            ItemEditor.UpdateChecks(_settings.CustomItemListString);
+            UpdateCustomItemAmountLabel();
+        }
+
+        //private void ItemEditor_FormClosing(object sender, FormClosingEventArgs e)
+        //{
+        //    //tCustomItemList.Text = _settings.CustomItemListString;
+        //    UpdateCustomItemAmountLabel();
+        //}
+
+        private void UpdateCustomItemAmountLabel()
+        {
+            if (_settings.CustomItemList.Contains(-1))
+            {
+                lCustomItemAmount.Text = "Invalid custom item string";
+            }
+            else
+            {
+                lCustomItemAmount.Text = $"{_settings.CustomItemList.Count}/{Items.TotalNumberOfItems - Items.NumberOfAreasAndOther} items randomized";
+            }
         }
 
 
@@ -308,40 +359,31 @@ namespace MMRando
         {
             var onMainTab = ttOutput.SelectedTab.TabIndex == 0;
 
-
-            bool optionsEnabled = (_settings.LogicMode == LogicMode.Vanilla) ? false : onMainTab;
-            
-            cMixSongs.Enabled = optionsEnabled;
-            cSoS.Enabled = optionsEnabled;
-            cDChests.Enabled = optionsEnabled;
-            cDEnt.Enabled = optionsEnabled;
-            cBottled.Enabled = optionsEnabled;
-            cShop.Enabled = optionsEnabled;
-            cSpoiler.Enabled = optionsEnabled;
-            cGossipHints.Enabled = optionsEnabled;
-            cAdditional.Enabled = optionsEnabled;
-            cUserItems.Enabled = optionsEnabled;
-            cMoonItems.Enabled = optionsEnabled;
-            cNutChest.Enabled = (_settings.LogicMode == LogicMode.Vanilla) ?
-                false : onMainTab && _settings.LogicMode != LogicMode.Casual;
-            cStartingItems.Enabled = onMainTab;
-            cNoStartingItems.Enabled = onMainTab;
-
-            cHTMLLog.Enabled = onMainTab;
-
-            if (_settings.UseCustomItemList)
+            if (_settings.LogicMode == LogicMode.Vanilla)
             {
+                cMixSongs.Enabled = false;
                 cSoS.Enabled = false;
                 cDChests.Enabled = false;
+                cDEnt.Enabled = false;
                 cBottled.Enabled = false;
                 cShop.Enabled = false;
+                cSpoiler.Enabled = false;
+                cGossipHints.Enabled = false;
                 cAdditional.Enabled = false;
+                cUserItems.Enabled = false;
                 cMoonItems.Enabled = false;
                 cNutChest.Enabled = false;
-                cStartingItems.Enabled = false;
+                cCrazyStartingItems.Enabled = false;
+                cNoStartingItems.Enabled = false;
             }
-            else if (_settings.LogicMode != LogicMode.Vanilla)
+            else
             {
+                cMixSongs.Enabled = onMainTab;
+                cDEnt.Enabled = onMainTab;
+                cSpoiler.Enabled = onMainTab;
+                cGossipHints.Enabled = onMainTab;
+                cUserItems.Enabled = onMainTab;
+
                 cSoS.Enabled = onMainTab;
                 cDChests.Enabled = onMainTab;
                 cBottled.Enabled = onMainTab;
@@ -349,9 +391,17 @@ namespace MMRando
                 cAdditional.Enabled = onMainTab;
                 cMoonItems.Enabled = onMainTab;
                 cNutChest.Enabled = onMainTab && _settings.LogicMode != LogicMode.Casual;
-                cStartingItems.Enabled = onMainTab;
-                cNoStartingItems.Enabled = onMainTab;
+                cCrazyStartingItems.Enabled = onMainTab;
+
+                cNoStartingItems.Enabled = onMainTab && (_settings.AddOtherItems || _settings.UseCustomItemList);
+                if (!cNoStartingItems.Enabled)
+                {
+                    cNoStartingItems.Checked = false;
+                    _settings.NoStartingItems = false;
+                }
             }
+
+            cHTMLLog.Enabled = onMainTab;
 
             if (_settings.GossipHintStyle == GossipHintStyle.Default || _settings.LogicMode == LogicMode.Vanilla)
             {
@@ -400,7 +450,7 @@ namespace MMRando
             cN64.Enabled = v;
             cMoonItems.Enabled = v;
             cNutChest.Enabled = v;
-            cStartingItems.Enabled = v;
+            cCrazyStartingItems.Enabled = v;
             cNoStartingItems.Enabled = v;
             cPatch.Enabled = v;
             bApplyPatch.Enabled = v;
@@ -437,6 +487,7 @@ namespace MMRando
             BindTextBoxToSetting(tSeed, nameof(_settings.Seed));
             BindTextBoxToSetting(tUserLogic, nameof(_settings.UserLogicFileName));
             BindTextBoxToSetting(tPatch, nameof(_settings.InputPatchFilename));
+            BindTextBoxToSetting(tCustomItemList, nameof(_settings.CustomItemListString));
 
             // Output Settings
             BindCheckboxToSetting(cN64, nameof(_settings.OutputN64ROM));
@@ -459,7 +510,7 @@ namespace MMRando
 
             BindCheckboxToSetting(cShopAppearance, nameof(_settings.UpdateShopAppearance));
             BindCheckboxToSetting(cNutChest, nameof(_settings.AddNutChest));
-            BindCheckboxToSetting(cStartingItems, nameof(_settings.CrazyStartingItems));
+            BindCheckboxToSetting(cCrazyStartingItems, nameof(_settings.CrazyStartingItems));
             BindCheckboxToSetting(cNoStartingItems, nameof(_settings.NoStartingItems));
             BindCheckboxToSetting(cEponaSword, nameof(_settings.FixEponaSword));
             BindCheckboxToSetting(cUpdateChests, nameof(_settings.UpdateChests));
@@ -488,13 +539,6 @@ namespace MMRando
 
             bTunic.DataBindings.Add("BackColor", settingsBindingSource, nameof(_settings.TunicColor), true, DataSourceUpdateMode.OnPropertyChanged);
             settingsBindingSource.DataSource = _settings;
-
-            /* 
-
-            // UserItems_CheckChanged the (cDChests.Checked = false; stuff)
-            
-
-             */
         }
 
         private void BindCheckboxToSetting(CheckBox checkbox, string property)
