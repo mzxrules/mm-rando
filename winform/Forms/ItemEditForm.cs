@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Linq;
+using System.Drawing;
 
 namespace MMRando.Forms
 {
@@ -47,64 +49,83 @@ namespace MMRando.Forms
         "Goron Trial HP", "Zora Trial HP", "Link Trial HP", "Fierce Deity's Mask", "Link Trial 30 Arrows", "Link Trial 10 Bombchu", "Pre-Clocktown 10 Deku Nuts",
         "Starting Sword", "Starting Shield", "Starting Heart 1", "Starting Heart 2" };
 
-        bool updating = false;
-        private Settings _settings;
+        const int NUM_ITEMS = Items.TotalNumberOfItems - Items.NumberOfAreasAndOther;
+        public HashSet<int> CustomItemList = new HashSet<int>();
 
-        public ItemEditForm()
+        public ItemEditForm(Settings settings)
         {
             InitializeComponent();
-        }
-        public void InitializeSettings(Settings settings)
-        { 
-            _settings = settings;
-
             for (int i = 0; i < ITEM_NAMES.Length; i++)
             {
                 lItems.Items.Add(ITEM_NAMES[i]);
             }
-
-            UpdateString(_settings.CustomItemList);
+            CustomItemList.UnionWith(settings.CustomItemList);
+            PruneCustomItemList(CustomItemList);
         }
 
-        private void fItemEdit_FormClosing(object sender, FormClosingEventArgs e)
+        private void InitializeSettings()
         {
-            if (e.CloseReason == CloseReason.UserClosing)
+            foreach (ListViewItem l in lItems.Items)
             {
-                e.Cancel = true;
-                Hide();
+                l.Checked = CustomItemList.Contains(l.Index);
             }
+            UpdateString();
         }
 
-        private void UpdateString(List<int> selections)
+        private void UpdateString()
+        {
+            tSetting.Text = GetCustomItemListString(CustomItemList);
+            tSetting.BackColor = Color.White;
+        }
+
+        public static string GetCustomItemListString(IEnumerable<int> itemList)
         {
             int[] n = new int[8];
             string[] ns = new string[8];
-            for (int i = 0; i < selections.Count; i++)
+            foreach (int item in itemList)
             {
-                int j = selections[i] / 32;
-                int k = selections[i] % 32;
+                int j = item / 32;
+                int k = item % 32;
                 n[j] |= (int)(1 << k);
-                ns[j] = Convert.ToString(n[j], 16);
             }
-            tSetting.Text = ns[7] + "-" + ns[6] + "-" + ns[5] + "-" + ns[4] + "-"
-                + ns[3] + "-" + ns[2] + "-" + ns[1] + "-" + ns[0];
-            _settings.CustomItemListString = tSetting.Text;
+            for (int i = 0; i < ns.Length; i++)
+            {
+                if (n[i] != 0)
+                    ns[i] = Convert.ToString(n[i], 16);
+            }
+            return string.Join("-", ns.Reverse());
         }
 
-        public void UpdateChecks(string c)
+        public bool TrySetCustomItemList(string itemListString)
         {
-            updating = true;
+            tSetting.Text = itemListString;
+            if (!TryParseCustomItemListString(itemListString, out var newItemList))
+            {
+                return false;
+            }
+
+            //update
+
+            tSetting.BackColor = Color.White;
+            CustomItemList = newItemList;
+
+            foreach (ListViewItem l in lItems.Items)
+            {
+                l.Checked = CustomItemList.Contains(l.Index);
+            }
+            return true;
+        }
+
+        public static bool TryParseCustomItemListString(string c, out HashSet<int> newItemList)
+        {
+            newItemList = new HashSet<int>();
             try
             {
-                tSetting.Text = c;
-                _settings.CustomItemListString = c;
-                _settings.CustomItemList.Clear();
                 string[] v = c.Split('-');
                 int[] vi = new int[8];
                 if (v.Length != vi.Length)
                 {
-                    _settings.CustomItemList.Add(-1);
-                    return;
+                    return false;
                 }
                 for (int i = 0; i < 8; i++)
                 {
@@ -113,68 +134,70 @@ namespace MMRando.Forms
                         vi[i] = Convert.ToInt32(v[7 - i], 16);
                     }
                 }
-                for (int i = 0; i < 256; i++)
+                for (int i = 0; i < NUM_ITEMS; i++)
                 {
                     int j = i / 32;
                     int k = i % 32;
                     if (((vi[j] >> k) & 1) > 0)
                     {
-                        if (i >= (Items.TotalNumberOfItems - Items.NumberOfAreasAndOther))
+                        if (i >= NUM_ITEMS)
                         {
                             throw new IndexOutOfRangeException();
                         }
-                        _settings.CustomItemList.Add(i);
-                    }
-                }
-                foreach (ListViewItem l in lItems.Items)
-                {
-                    if (_settings.CustomItemList.Contains(l.Index))
-                    {
-                        l.Checked = true;
-                    }
-                    else
-                    {
-                        l.Checked = false;
+                        newItemList.Add(i);
                     }
                 }
             }
             catch
             {
-                _settings.CustomItemList.Clear();
-                _settings.CustomItemList.Add(-1);
+                return false;
             }
-            finally
-            {
-                updating = false;
-            }
+            return true;
         }
 
         private void tSetting_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyData == Keys.Enter)
             {
-                UpdateChecks(tSetting.Text);
+                if (TrySetCustomItemList(tSetting.Text))
+                {
+                    tSetting.BackColor = Color.White;
+                }
+                else
+                {
+                    tSetting.BackColor = Color.Pink;
+                }
+            }
+        }
+        private void lItems_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.NewValue == CheckState.Checked)
+            {
+                CustomItemList.Add(e.Index);
+            }
+            else if (e.NewValue == CheckState.Unchecked)
+            {
+                CustomItemList.Remove(e.Index);
+            }
+            UpdateString();
+        }
+
+        private void ItemEditForm_Load(object sender, EventArgs e)
+        {
+            InitializeSettings();
+        }
+
+        public static void PruneCustomItemList(ICollection<int> itemList)
+        {
+            foreach (var item in itemList)
+            {
+                if (item >= NUM_ITEMS)
+                {
+                    itemList.Remove(item);
+                }
             }
         }
 
-        private void lItems_ItemChecked(object sender, ItemCheckedEventArgs e)
-        {
-            if (updating)
-            {
-                return;
-            }
-            updating = true;
-            if (e.Item.Checked)
-            {
-                _settings.CustomItemList.Add(e.Item.Index);
-            }
-            else
-            {
-                _settings.CustomItemList.Remove(e.Item.Index);
-            }
-            UpdateString(_settings.CustomItemList);
-            updating = false;
-        }
 
     }
 }

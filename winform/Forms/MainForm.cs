@@ -8,6 +8,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace MMRando
 {
@@ -38,14 +39,10 @@ namespace MMRando
             InitializeSettings();
             InitializeTooltips();
 
-            ItemEditor = new ItemEditForm();
-            //ItemEditor.FormClosing += ItemEditor_FormClosing;
-            //UpdateCustomItemAmountLabel();
+            ItemEditor = new ItemEditForm(_settings);
             LogicEditor = new LogicEditorForm();
             Manual = new ManualForm();
             About = new AboutForm();
-
-            ItemEditor.InitializeSettings(_settings);
             BindProperties();
 
             Text = AssemblyVersion;
@@ -323,20 +320,16 @@ namespace MMRando
 
         private void bItemListEditor_Click(object sender, EventArgs e)
         {
-            ItemEditor.Show();
+            ItemEditor.ShowDialog();
+            _settings.CustomItemList = ItemEditor.CustomItemList.ToList();
+            _settings.CustomItemList.Sort();
+            _settings.CustomItemListString = ItemEditForm.GetCustomItemListString(_settings.CustomItemList);
         }
 
         private void tCustomItemList_TextChanged(object sender, EventArgs e)
         {
-            ItemEditor.UpdateChecks(_settings.CustomItemListString);
             UpdateCustomItemAmountLabel();
         }
-
-        //private void ItemEditor_FormClosing(object sender, FormClosingEventArgs e)
-        //{
-        //    //tCustomItemList.Text = _settings.CustomItemListString;
-        //    UpdateCustomItemAmountLabel();
-        //}
 
         private void UpdateCustomItemAmountLabel()
         {
@@ -470,6 +463,7 @@ namespace MMRando
         private void InitializeSettings()
         {
             _settings = Settings.LoadFromFile("settings.json");
+            _settings.CustomItemListString = ItemEditForm.GetCustomItemListString(_settings.CustomItemList);
         }
 
         private void SaveSettings()

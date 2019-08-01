@@ -305,6 +305,8 @@ namespace MMRando.Models
         }
         private List<int> customItemList = new List<int>();
 
+
+        [JsonIgnore]
         /// <summary>
         ///  Custom item list string
         /// </summary>

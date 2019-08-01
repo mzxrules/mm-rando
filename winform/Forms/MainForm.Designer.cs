@@ -432,6 +432,7 @@ namespace MMRando
             // 
             this.tCustomItemList.Location = new System.Drawing.Point(6, 82);
             this.tCustomItemList.Name = "tCustomItemList";
+            this.tCustomItemList.ReadOnly = true;
             this.tCustomItemList.Size = new System.Drawing.Size(313, 20);
             this.tCustomItemList.TabIndex = 19;
             this.tCustomItemList.Text = "-------";
