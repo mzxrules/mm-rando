@@ -32,6 +32,29 @@ namespace MMRando.Models
         private LogicMode logicMode = LogicMode.Casual;
 
         /// <summary>
+        /// Use Custom Item list for the logic.
+        /// </summary>
+        public bool UseCustomItemList
+        {
+            get => useCustomItemList;
+            set
+            {
+                SetField(ref useCustomItemList, value);
+
+                //Todo: enable/disable ui elements instead, then have a "validate" stage for generating settings
+                //this.AddDungeonItems = false; // cDChests.Checked
+                //this.AddShopItems = false; // cShop.Checked
+                //this.RandomizeBottleCatchContents = false; //cBottled.Checked
+                //this.ExcludeSongOfSoaring = false; // cSoS.Checked
+                //this.AddOtherItems = false; //cAdditional.Checked
+                //this.AddMoonItems = false; //cMoonItems.Checked
+                //this.AddNutChest = false; //cNutChest.Checked = false;
+                //this.NoStartingItems = false; //cStartingItems.Checked = false;
+            }
+        }
+        private bool useCustomItemList;
+
+        /// <summary>
         /// Add songs to the randomization pool
         /// </summary>
         public bool AddSongs
@@ -46,7 +69,7 @@ namespace MMRando.Models
         /// </summary>
         public bool AddDungeonItems
         {
-            get => addDungeonItems;
+            get => (UseCustomItemList) ? false : addDungeonItems;
             set => SetField(ref addDungeonItems, value);
         }
         private bool addDungeonItems;
@@ -56,7 +79,7 @@ namespace MMRando.Models
         /// </summary>
         public bool AddShopItems
         {
-            get => addShopItems;
+            get => (UseCustomItemList) ? false : addShopItems;
             set => SetField(ref addShopItems, value);
         }
         private bool addShopItems;
@@ -66,7 +89,7 @@ namespace MMRando.Models
         /// </summary>
         public bool AddMoonItems
         {
-            get => addMoonItems;
+            get => (UseCustomItemList) ? false : addMoonItems;
             set => SetField(ref addMoonItems, value);
         }
         private bool addMoonItems;
@@ -76,10 +99,30 @@ namespace MMRando.Models
         /// </summary>
         public bool AddOtherItems
         {
-            get => addOtherItems;
+            get => (UseCustomItemList) ? false : addOtherItems;
             set => SetField(ref addOtherItems, value);
         }
-        private bool addOtherItems;
+        private bool addOtherItems = true;
+
+        /// <summary>
+        /// Add pre-clocktown nut chest to the randomization pool
+        /// </summary>
+        public bool AddNutChest
+        {
+            get => (UseCustomItemList) ? false : addNutChest;
+            set => SetField(ref addNutChest, value);
+        }
+        private bool addNutChest;
+
+        /// <summary>
+        /// Add starting sword/shield/heart containers to the randomization pool
+        /// </summary>
+        public bool CrazyStartingItems
+        {
+            get => (UseCustomItemList) ? false : crazyStartingItems;
+            set => SetField(ref crazyStartingItems, value);
+        }
+        private bool crazyStartingItems;
 
 
         /// <summary>
@@ -87,7 +130,7 @@ namespace MMRando.Models
         /// </summary>
         public bool RandomizeBottleCatchContents
         {
-            get => randomizeBottleCatchContents;
+            get => (UseCustomItemList) ? false : randomizeBottleCatchContents;
             set => SetField(ref randomizeBottleCatchContents, value);
         }
         private bool randomizeBottleCatchContents;
@@ -97,7 +140,7 @@ namespace MMRando.Models
         /// </summary>
         public bool ExcludeSongOfSoaring
         {
-            get => excludeSongOfSoaring;
+            get => (UseCustomItemList) ? false : excludeSongOfSoaring;
             set => SetField(ref excludeSongOfSoaring, value);
         }
         private bool excludeSongOfSoaring = true;
@@ -151,6 +194,17 @@ namespace MMRando.Models
             set => SetField(ref randomizeEnemies, value);
         }
         private bool randomizeEnemies;
+
+
+        /// <summary>
+        /// Prevents player starting with any items that are randomized.
+        /// </summary>
+        public bool NoStartingItems
+        {
+            get => (UseCustomItemList || AddOtherItems) ? noStartingItems : false;
+            set => SetField(ref noStartingItems, value);
+        }
+        private bool noStartingItems = true;
 
 
         #region INotifyPropertyChanged

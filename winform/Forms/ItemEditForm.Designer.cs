@@ -50,7 +50,7 @@
             this.lItems.TabIndex = 1;
             this.lItems.UseCompatibleStateImageBehavior = false;
             this.lItems.View = System.Windows.Forms.View.List;
-            this.lItems.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lItems_ItemChecked);
+            this.lItems.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.lItems_ItemCheck);
             // 
             // columnHeader1
             // 
@@ -89,7 +89,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ItemEditForm";
             this.Text = "Item List Editor";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.fItemEdit_FormClosing);
+            this.Load += new System.EventHandler(this.ItemEditForm_Load);
             this.tLayout.ResumeLayout(false);
             this.tLayout.PerformLayout();
             this.ResumeLayout(false);

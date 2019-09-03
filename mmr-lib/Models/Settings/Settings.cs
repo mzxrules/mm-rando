@@ -118,27 +118,6 @@ namespace MMRando.Models
         private bool outputHTMLSpoiler = true;
 
         /// <summary>
-        /// Use Custom Item list for the logic.
-        /// </summary>
-        public bool UseCustomItemList
-        {
-            get => useCustomItemList;
-            set
-            {
-                SetField(ref useCustomItemList, value);
-
-                //Todo: enable/disable ui elements instead, then have a "validate" stage for generating settings
-                this.AddDungeonItems = false; // cDChests.Checked
-                this.AddShopItems = false; // cShop.Checked
-                this.RandomizeBottleCatchContents = false; //cBottled.Checked
-                this.ExcludeSongOfSoaring = false; // cSoS.Checked
-                this.AddOtherItems = false; //cAdditional.Checked
-                this.AddMoonItems = false; //cMoonItems.Checked
-            }
-        }
-        private bool useCustomItemList;
-
-        /// <summary>
         /// Generate patch file
         /// </summary>
         public bool OutputROMPatch
@@ -206,6 +185,37 @@ namespace MMRando.Models
             set => SetField(ref preventDowngrades, value);
         }
         private bool preventDowngrades = true;
+
+        /// <summary>
+        /// Updates shop models and text
+        /// </summary>
+        public bool UpdateShopAppearance
+        {
+            get => updateShopAppearance;
+            set => SetField(ref updateShopAppearance, value);
+        }
+        private bool updateShopAppearance = true;
+
+        /// <summary>
+        /// Updates chest appearance to match contents
+        /// </summary>
+        public bool UpdateChests
+        { 
+            get => updateChests;
+            set => SetField(ref updateChests, value);
+        }
+        private bool updateChests = true;
+
+        /// <summary>
+        /// Change epona B button behavior to prevent player losing sword if they don't have a bow.
+        /// </summary>
+        public bool FixEponaSword
+        {
+            get => fixEponaSword;
+            set => SetField(ref fixEponaSword, value);
+        }
+        private bool fixEponaSword = true;
+
         #endregion
 
         #region Gimmicks
@@ -295,6 +305,8 @@ namespace MMRando.Models
         }
         private List<int> customItemList = new List<int>();
 
+
+        [JsonIgnore]
         /// <summary>
         ///  Custom item list string
         /// </summary>
