@@ -63,39 +63,6 @@ namespace MMRando
             .Concat(Enumerable.Range((int)Item.TradeItemMoonTear, Item.TradeItemMamaLetter - Item.TradeItemMoonTear + 1).Cast<Item>())
             .Concat(Enumerable.Range((int)Item.ItemBottleWitch, Item.ItemBottleMadameAroma - Item.ItemBottleWitch + 1).Cast<Item>())
             .ToList();
-        private readonly ReadOnlyCollection<ReadOnlyCollection<Item>> ForbiddenStartTogether = new List<List<Item>>()
-        {
-            new List<Item>
-            {
-                Item.ItemBow,
-                Item.UpgradeBigQuiver,
-                Item.UpgradeBiggestQuiver,
-            },
-            new List<Item>
-            {
-                Item.ItemBombBag,
-                Item.UpgradeBigBombBag,
-                Item.UpgradeBiggestBombBag,
-            },
-            new List<Item>
-            {
-                Item.UpgradeAdultWallet,
-                Item.UpgradeGiantWallet,
-            },
-            new List<Item>
-            {
-                Item.StartingSword,
-                Item.UpgradeRazorSword,
-                Item.UpgradeGildedSword,
-            },
-            new List<Item>
-            {
-                Item.UpgradeMirrorShield,
-                Item.StartingShield,
-                Item.ShopItemTradingPostShield,
-                Item.ShopItemZoraShield,
-            },
-        }.Select(list => list.AsReadOnly()).ToList().AsReadOnly();
 
         private readonly Dictionary<Item, List<Item>> ForbiddenReplacedBy = new Dictionary<Item, List<Item>>
         {
@@ -184,6 +151,7 @@ namespace MMRando
             for (int i = 0; i < 4; i++)
             {
                 //Debug.WriteLine($"Entrance {Item.ITEM_NAMES[areaAccessObjectIndexes[newEntranceIndices[i]]]} placed at {Item.ITEM_NAMES[areaAccessObjects[i].ID]}.");
+                areaAccessObjects[i].IsRandomized = true;
                 ItemList[areaAccessObjectIndexes[newEntranceIndices[i]]] = areaAccessObjects[i];
             }
 
@@ -328,6 +296,8 @@ namespace MMRando
             ItemList = new List<ItemObject>();
 
             if (_settings.LogicMode == LogicMode.Casual
+                || _settings.LogicMode == LogicMode.GlitchedNoSetups
+                || _settings.LogicMode == LogicMode.GlitchedCommonTricks
                 || _settings.LogicMode == LogicMode.Glitched
                 || _settings.LogicMode == LogicMode.User)
             {
@@ -345,12 +315,11 @@ namespace MMRando
         /// </summary>
         private void PopulateItemListWithoutLogic()
         {
-            for (var i = 0; i < Items.TotalNumberOfItems; i++)
+            foreach (var item in Enum.GetValues(typeof(Item)).Cast<Item>())
             {
-                var item = (Item)i;
                 var currentItem = new ItemObject
                 {
-                    ID = i,
+                    ID = (int)item,
                     Name = item.Name() ?? item.ToString(),
                     TimeAvailable = 63
                 };
@@ -475,24 +444,14 @@ namespace MMRando
             string[] lines = null;
             var mode = _settings.LogicMode;
 
-            if (mode == LogicMode.Casual)
+            if (_settings.LogicMode == LogicMode.User)
             {
-                lines = Resources.GetTextFile("REQ_CASUAL.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                return LogicUtil.GetLogic(_settings.UserLogicFileName);
             }
-            else if (mode == LogicMode.Glitched)
-            {
-                lines = Resources.GetTextFile("REQ_GLITCH.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-            }
-            else if (mode == LogicMode.User)
-            {
-                using (StreamReader Req = new StreamReader(File.Open(_settings.UserLogicFileName, FileMode.Open)))
-                {
-                    lines = Req.ReadToEnd().Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-                }
-            }
-
-            return lines;
+            else
+                return LogicUtil.GetLogic(mode);
         }
+
 
         private Dependence CheckDependence(Item currentItem, Item target, List<Item> dependencyPath)
         {
@@ -1017,6 +976,7 @@ namespace MMRando
                 if (CheckMatch(currentItem, targetLocation))
                 {
                     currentItemObject.NewLocation = targetLocation;
+                    currentItemObject.IsRandomized = true;
 
                     Debug.WriteLine($"----Placed {currentItem.Name()} at {targetLocation.Location()}----");
 
@@ -1231,12 +1191,13 @@ namespace MMRando
                         throw new Exception("Failed to replace a starting item.");
                     }
                     ItemList[(int)placedItem].NewLocation = location;
+                    ItemList[(int)placedItem].IsRandomized = true;
                     itemPool.Remove(location);
                     availableStartingItems.Remove(placedItem.Value);
                 }
 
 
-                var forbiddenStartTogether = ForbiddenStartTogether.FirstOrDefault(list => list.Contains(placedItem.Value));
+                var forbiddenStartTogether = ItemUtils.ForbiddenStartTogether.FirstOrDefault(list => list.Contains(placedItem.Value));
                 if (forbiddenStartTogether != null)
                 {
                     availableStartingItems.RemoveAll(item => forbiddenStartTogether.Contains(item.Value));
@@ -1316,6 +1277,11 @@ namespace MMRando
             if (!_settings.AddMoonItems)
             {
                 PreserveMoonItems();
+            }
+
+            if (!_settings.AddFairyRewards)
+            {
+                PreserveFairyRewards();
             }
 
             if (!_settings.AddNutChest || _settings.LogicMode == LogicMode.Casual)
@@ -1407,6 +1373,18 @@ namespace MMRando
             {
                 ItemList[(int)i].NewLocation = i;
             }
+        }
+
+        /// <summary>
+        /// Keeps great fairy rewards vanilla
+        /// </summary>
+        private void PreserveFairyRewards()
+        {
+            for (var i = Item.FairyMagic; i <= Item.ItemFairySword; i++)
+            {
+                ItemList[(int)i].NewLocation = i;
+            }
+            ItemList[(int)Item.MaskGreatFairy].NewLocation = Item.MaskGreatFairy;
         }
 
         /// <summary>
@@ -1567,13 +1545,13 @@ namespace MMRando
                             break;
                         }
 
-                        found = true;
                         conditionalRequirements.Add((Item)conditionalItemId);
                         conditionalRequirements.AddRange(requiredChildren);
                     }
 
                     if (conditionalRequirements != null)
                     {
+                        found = true;
                         result.AddRange(conditionalRequirements);
                     }
                 }

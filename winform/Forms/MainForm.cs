@@ -5,10 +5,10 @@ using MMRando.Utils;
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Newtonsoft.Json;
-using System.Linq;
 
 namespace MMRando
 {
@@ -70,6 +70,7 @@ namespace MMRando
             TooltipBuilder.SetTooltip(cAdditional, "Enable miscellaneous items being placed in the randomization pool.\n\nAmong the miscellaneous items are:\nFreestanding heartpieces, overworld chests, (hidden) grotto chests, Tingle's maps and bank heartpiece.");
             TooltipBuilder.SetTooltip(cEnemy, "Enable randomization of enemies. May cause softlocks in some circumstances, use at your own risk.");
             TooltipBuilder.SetTooltip(cMoonItems, "Enable moon items being placed in the randomization pool.\n\nIncludes the four Moon Trial Heart Pieces, Fierce Deity's Mask and the two Link Trial chests.");
+            TooltipBuilder.SetTooltip(cFairyRewards, "Enable great fairy rewards being placed in the randomization pool.\n\nIncludes Magic Power, Great Spin Attack, Extended Magic Power, Double Defense, Great Fairy's Sword and Great Fairy's Mask.");
             TooltipBuilder.SetTooltip(cNutChest, "Enable randomization of the pre-clocktown deku nut chest. Not available when using Casual logic.");
             TooltipBuilder.SetTooltip(cCrazyStartingItems, "Enable randomization of starting Sword, Shield, and two Heart Containers.");
 
@@ -289,6 +290,8 @@ namespace MMRando
 
             cMoonItems.Visible = !cUserItems.Checked;
 
+            cFairyRewards.Visible = !cUserItems.Checked;
+
             cNutChest.Visible = !cUserItems.Checked;
 
             cCrazyStartingItems.Visible = !cUserItems.Checked;
@@ -339,7 +342,7 @@ namespace MMRando
             }
             else
             {
-                lCustomItemAmount.Text = $"{_settings.CustomItemList.Count}/{Items.TotalNumberOfItems - Items.NumberOfAreasAndOther} items randomized";
+                lCustomItemAmount.Text = $"{_settings.CustomItemList.Count}/{ItemUtils.AllLocations().Count()} items randomized";
             }
         }
 
@@ -365,6 +368,7 @@ namespace MMRando
                 cAdditional.Enabled = false;
                 cUserItems.Enabled = false;
                 cMoonItems.Enabled = false;
+                cFairyRewards.Enabled = false;
                 cNutChest.Enabled = false;
                 cCrazyStartingItems.Enabled = false;
                 cNoStartingItems.Enabled = false;
@@ -383,6 +387,7 @@ namespace MMRando
                 cShop.Enabled = onMainTab;
                 cAdditional.Enabled = onMainTab;
                 cMoonItems.Enabled = onMainTab;
+                cFairyRewards.Enabled = onMainTab;
                 cNutChest.Enabled = onMainTab && _settings.LogicMode != LogicMode.Casual;
                 cCrazyStartingItems.Enabled = onMainTab;
 
@@ -442,6 +447,7 @@ namespace MMRando
             cHTMLLog.Enabled = v;
             cN64.Enabled = v;
             cMoonItems.Enabled = v;
+            cFairyRewards.Enabled = v;
             cNutChest.Enabled = v;
             cCrazyStartingItems.Enabled = v;
             cNoStartingItems.Enabled = v;
@@ -501,6 +507,7 @@ namespace MMRando
             BindCheckboxToSetting(cAdditional, nameof(_settings.AddOtherItems));
             BindCheckboxToSetting(cEnemy, nameof(_settings.RandomizeEnemies));
             BindCheckboxToSetting(cMoonItems, nameof(_settings.AddMoonItems));
+            BindCheckboxToSetting(cFairyRewards, nameof(_settings.AddFairyRewards));
 
             BindCheckboxToSetting(cShopAppearance, nameof(_settings.UpdateShopAppearance));
             BindCheckboxToSetting(cNutChest, nameof(_settings.AddNutChest));

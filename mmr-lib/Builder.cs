@@ -348,13 +348,9 @@ namespace MMRando
         {
             Dictionary<int, byte> startingItems = new Dictionary<int, byte>();
             PutOrCombine(startingItems, 0xC5CE72, 0x10); // add Song of Time
-
-            // can't start with more than 15 hearts with this method. heart container value is two bytes
-            PutOrCombine(startingItems, 0xC5CDE9, 0x10, true); // add Heart Container
-            PutOrCombine(startingItems, 0xC5CDEB, 0x10, true); // add current health
-            PutOrCombine(startingItems, 0xC40E1B, 0x10, true); // add respawn health
-
+            
             var itemList = items.ToList();
+            itemList.Add(Item.StartingHeartContainer1);
             while (itemList.Count(item => item.Name() == "Piece of Heart") >= 4)
             {
                 itemList.Add(Item.StartingHeartContainer1);
@@ -364,6 +360,11 @@ namespace MMRando
                     itemList.Remove(heartPiece);
                 }
             }
+
+            itemList = itemList
+                .GroupBy(item => ItemUtils.ForbiddenStartTogether.FirstOrDefault(fst => fst.Contains(item)))
+                .SelectMany(g => g.Key == null ? g.ToList() : g.OrderByDescending(item => g.Key.IndexOf(item)).Take(1))
+                .ToList();
 
             foreach (var item in itemList)
             {
@@ -382,6 +383,11 @@ namespace MMRando
             {
                 ReadWriteUtils.WriteToROM(kvp.Key, kvp.Value);
             }
+
+            if (itemList.Count(item => item.Name() == "Heart Container") == 1)
+            {
+                ReadWriteUtils.WriteToROM(0x00B97E8F, 0x0C); // reduce low health beep threshold
+            }
         }
 
         private void WriteItems()
@@ -389,6 +395,7 @@ namespace MMRando
             var freeItems = new List<Item>();
             if (_settings.LogicMode == LogicMode.Vanilla)
             {
+                freeItems.Add(Item.FairyMagic);
                 freeItems.Add(Item.MaskDeku);
                 freeItems.Add(Item.SongHealing);
                 freeItems.Add(Item.StartingSword);
@@ -420,7 +427,10 @@ namespace MMRando
             ItemSwapUtils.ReplaceGetItemTable(Values.ModsDirectory);
             ItemSwapUtils.InitItems();
 
-            ResourceUtils.ApplyHack(Values.ModsDirectory + "fix-epona");
+            if (_settings.FixEponaSword)
+            {
+                ResourceUtils.ApplyHack(Values.ModsDirectory + "fix-epona");
+            }
             if (_settings.PreventDowngrades)
             {
                 ResourceUtils.ApplyHack(Values.ModsDirectory + "fix-downgrades");
@@ -446,7 +456,7 @@ namespace MMRando
                     {
                         overrideChestType = ChestTypeAttribute.ChestType.LargeGold;
                     }
-                    ItemSwapUtils.WriteNewItem(item.NewLocation.Value, item.Item, newMessages, _settings.UpdateShopAppearance, _settings.PreventDowngrades, _settings.UpdateChests, overrideChestType);
+                    ItemSwapUtils.WriteNewItem(item.NewLocation.Value, item.Item, newMessages, _settings.UpdateShopAppearance, _settings.PreventDowngrades, _settings.UpdateChests && item.IsRandomized, overrideChestType);
                 }
             }
 
@@ -529,6 +539,15 @@ namespace MMRando
                 Header = new byte[11] { 0x06, 0x00, 0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF },
                 Message = $"You got the \x01Kokiri Sword\x00!\u0011This is a hidden treasure of\u0011the Kokiri, but you can borrow it\u0011for a while.\u00BF",
             });
+
+            // replace Magic Power message
+            newMessages.Add(new MessageEntry
+            {
+                Id = 0xC8,
+                Header = null,
+                Message = $"\u0017You've been granted \u0002Magic Power\u0000!\u0018\u0011Replenish it with \u0001Magic Jars\u0000\u0011and \u0001Potions\u0000.\u00BF",
+            });
+
             _messageTable.UpdateMessages(newMessages);
 
             if (_settings.AddShopItems)

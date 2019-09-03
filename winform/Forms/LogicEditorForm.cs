@@ -9,16 +9,19 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using MMRando.LogicMigrator;
+using MMRando.Properties;
+using MMRando.Models;
+using MMRando.Utils;
 
 namespace MMRando
 {
     public partial class LogicEditorForm : Form
     {
         private static readonly string[] DEFAULT_ITEM_NAMES = new string[] { "Deku Mask", "Hero's Bow", "Fire Arrow", "Ice Arrow", "Light Arrow", "Bomb Bag (20)", "Magic Bean", 
-        "Powder Keg", "Pictobox", "Lens of Truth", "Hookshot", "Great Fairy's Sword", "Witch Bottle", "Aliens Bottle", "Gold Dust", 
-        "Beaver Race Bottle", "Dampe Bottle", "Chateau Bottle", "Bombers' Notebook", "Razor Sword", "Gilded Sword", "Mirror Shield",
-        "Town Archery Quiver (40)", "Swamp Archery Quiver (50)", "Town Bomb Bag (30)", "Mountain Bomb Bag (40)", "Town Wallet (200)", "Ocean Wallet (500)", "Moon's Tear", 
-        "Land Title Deed", "Swamp Title Deed", "Mountain Title Deed", "Ocean Title Deed", "Room Key", "Letter to Kafei", "Pendant of Memories",
+        "Powder Keg", "Pictobox", "Lens of Truth", "Hookshot", "Great Fairy Magic Meter", "Great Fairy Spin Attack", "Great Fairy Extended Magic", "Great Fairy Double Defense",
+        "Great Fairy's Sword", "Witch Bottle", "Aliens Bottle", "Gold Dust", "Beaver Race Bottle", "Dampe Bottle", "Chateau Bottle", "Bombers' Notebook", "Razor Sword",
+        "Gilded Sword", "Mirror Shield", "Town Archery Quiver (40)", "Swamp Archery Quiver (50)", "Town Bomb Bag (30)", "Mountain Bomb Bag (40)", "Town Wallet (200)",
+        "Ocean Wallet (500)", "Moon's Tear", "Land Title Deed", "Swamp Title Deed", "Mountain Title Deed", "Ocean Title Deed", "Room Key", "Letter to Kafei", "Pendant of Memories",
         "Letter to Mama", "Mayor Dotour HP", "Postman HP", "Rosa Sisters HP", "??? HP", "Grandma Short Story HP", "Grandma Long Story HP",
         "Keaton Quiz HP", "Deku Playground HP", "Town Archery HP", "Honey and Darling HP", "Swordsman's School HP", "Postbox HP",
         "Termina Field Gossips HP", "Termina Field Business Scrub HP", "Swamp Archery HP", "Pictograph Contest HP", "Boat Archery HP",
@@ -222,7 +225,12 @@ namespace MMRando
 
         private void nItem_ValueChanged(object sender, EventArgs e)
         {
-            n = (int)nItem.Value;
+            SetIndex((int)nItem.Value);
+        }
+
+        private void SetIndex(int index)
+        {
+            n = index;
             lIName.Text = ITEM_NAMES[n];
             updating = true;
             FillDependence(n);
@@ -288,68 +296,10 @@ namespace MMRando
         {
             if (openLogic.ShowDialog() == DialogResult.OK)
             {
-                StreamReader LogicFile = new StreamReader(File.Open(openLogic.FileName, FileMode.Open));
-                ItemList = new List<ItemLogic>();
-                var logicString = LogicFile.ReadToEnd();
-                logicString = Migrator.ApplyMigrations(logicString);
-                string[] lines = logicString.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-                ItemSelectorForm.ResetItems();
-                ITEM_NAMES = DEFAULT_ITEM_NAMES.ToArray();
-                int i = 0;
-                while (true)
-                {
-                    if (i == lines.Length)
-                    {
-                        break;
-                    };
-                    if (lines[i].Contains("-"))
-                    {
-                        var itemName = lines[i].Substring(2);
-                        if (ItemList.Count >= ITEM_NAMES.Length)
-                        {
-                            var newList = ITEM_NAMES.ToList();
-                            newList.Add(itemName);
-                            ItemSelectorForm.AddItem(itemName);
-                            ITEM_NAMES = newList.ToArray();
-                        }
-                        i++;
-                        continue;
-                    }
-                    else
-                    {
-                        ItemLogic l = new ItemLogic();
-                        l.Dependence = new List<int>();
-                        if (lines[i] != "")
-                        {
-                            foreach (string j in lines[i].Split(','))
-                            {
-                                l.Dependence.Add(Convert.ToInt32(j));
-                            };
-                        };
-                        l.Conditional = new List<List<int>>();
-                        if (lines[i + 1] != "")
-                        {
-                            foreach (string j in lines[i + 1].Split(';'))
-                            {
-                                List<int> c = new List<int>();
-                                foreach (string k in j.Split(','))
-                                {
-                                    c.Add(Convert.ToInt32(k));
-                                };
-                                l.Conditional.Add(c);
-                            };
-                        };
-                        l.Time_Needed = Convert.ToInt32(lines[i + 2]);
-                        l.Time_Available = Convert.ToInt32(lines[i + 3]);
-                        ItemList.Add(l);
-                        i += 4;
-                    };
-                };
-                LogicFile.Close();
-                nItem.Value = 1;
-                nItem.Value = 0;
-                nItem.Maximum = ITEM_NAMES.Length - 1;
-            };
+                var logic = LogicUtil.GetLogic(openLogic.FileName);
+                var migratedLogic = Migrator.ApplyMigrations(logic);
+                LoadLogic(migratedLogic);
+            }
         }
 
         private void mSave_Click(object sender, EventArgs e)
@@ -469,6 +419,92 @@ namespace MMRando
             {
                 UpdateConditional(n, index);
             }
+        }
+
+        private void casualToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            LoadLogic(LogicMode.Casual);
+        }
+
+        private void glitchednoSetupsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            LoadLogic(LogicMode.GlitchedNoSetups);
+        }
+
+        private void glitchedcommonTricksToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            LoadLogic(LogicMode.GlitchedCommonTricks);
+        }
+
+        private void glitchedToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            LoadLogic(LogicMode.Glitched);
+        }
+
+        private void LoadLogic(LogicMode logic)
+        {
+            LoadLogic(LogicUtil.GetLogic(logic));
+        }
+
+        private void LoadLogic(string[] logic)
+        {
+            ItemList = new List<ItemLogic>();
+            string[] lines = logic;
+            ItemSelectorForm.ResetItems();
+            ITEM_NAMES = DEFAULT_ITEM_NAMES.ToArray();
+            int i = 0;
+            while (true)
+            {
+                if (i == lines.Length)
+                {
+                    break;
+                };
+                if (lines[i].Contains("-"))
+                {
+                    var itemName = lines[i].Substring(2);
+                    if (ItemList.Count >= ITEM_NAMES.Length)
+                    {
+                        var newList = ITEM_NAMES.ToList();
+                        newList.Add(itemName);
+                        ItemSelectorForm.AddItem(itemName);
+                        ITEM_NAMES = newList.ToArray();
+                    }
+                    i++;
+                    continue;
+                }
+                else
+                {
+                    ItemLogic l = new ItemLogic();
+                    l.Dependence = new List<int>();
+                    if (lines[i] != "")
+                    {
+                        foreach (string j in lines[i].Split(','))
+                        {
+                            l.Dependence.Add(Convert.ToInt32(j));
+                        };
+                    };
+                    l.Conditional = new List<List<int>>();
+                    if (lines[i + 1] != "")
+                    {
+                        foreach (string j in lines[i + 1].Split(';'))
+                        {
+                            List<int> c = new List<int>();
+                            foreach (string k in j.Split(','))
+                            {
+                                c.Add(Convert.ToInt32(k));
+                            };
+                            l.Conditional.Add(c);
+                        };
+                    };
+                    l.Time_Needed = Convert.ToInt32(lines[i + 2]);
+                    l.Time_Available = Convert.ToInt32(lines[i + 3]);
+                    ItemList.Add(l);
+                    i += 4;
+                };
+            };
+            
+            nItem.Maximum = ITEM_NAMES.Length - 1;
+            SetIndex((int)nItem.Value);
         }
     }
 }

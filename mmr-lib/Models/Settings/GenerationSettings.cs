@@ -95,6 +95,16 @@ namespace MMRando.Models
         private bool addMoonItems;
 
         /// <summary>
+        /// Add great fairy rewards to the randomization pool
+        /// </summary>
+        public bool AddFairyRewards
+        {
+            get => (UseCustomItemList) ? false : addFairyRewards;
+            set => SetField(ref addFairyRewards, value);
+        }
+        private bool addFairyRewards;
+
+        /// <summary>
         /// Add everything else to the randomization pool
         /// </summary>
         public bool AddOtherItems

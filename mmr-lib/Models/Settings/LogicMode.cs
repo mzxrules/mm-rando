@@ -8,6 +8,10 @@ namespace MMRando.Models
         Casual,
         [Description("Glitched Logic")]
         Glitched,
+        [Description("Glitched No Setups")]
+        GlitchedNoSetups,
+        [Description("Glitched Common Tricks")]
+        GlitchedCommonTricks,
         [Description("User Logic")]
         User,
         [Description("No Logic")]

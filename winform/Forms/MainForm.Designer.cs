@@ -53,6 +53,7 @@ namespace MMRando
             this.cEnemy = new System.Windows.Forms.CheckBox();
             this.cMixSongs = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.cFairyRewards = new System.Windows.Forms.CheckBox();
             this.lCustomItemAmount = new System.Windows.Forms.Label();
             this.tCustomItemList = new System.Windows.Forms.TextBox();
             this.bItemListEditor = new System.Windows.Forms.Button();
@@ -334,7 +335,7 @@ namespace MMRando
             this.groupBox3.Controls.Add(this.cDEnt);
             this.groupBox3.Controls.Add(this.cEnemy);
             this.groupBox3.Controls.Add(this.cMixSongs);
-            this.groupBox3.Location = new System.Drawing.Point(10, 187);
+            this.groupBox3.Location = new System.Drawing.Point(10, 200);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(324, 71);
             this.groupBox3.TabIndex = 16;
@@ -399,6 +400,7 @@ namespace MMRando
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.cFairyRewards);
             this.groupBox2.Controls.Add(this.lCustomItemAmount);
             this.groupBox2.Controls.Add(this.tCustomItemList);
             this.groupBox2.Controls.Add(this.bItemListEditor);
@@ -413,10 +415,24 @@ namespace MMRando
             this.groupBox2.Controls.Add(this.cMoonItems);
             this.groupBox2.Location = new System.Drawing.Point(10, 49);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(325, 132);
+            this.groupBox2.Size = new System.Drawing.Size(325, 145);
             this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Item Pool Options";
+            // 
+            // cFairyRewards
+            // 
+            this.cFairyRewards.AutoSize = true;
+            this.cFairyRewards.BackColor = System.Drawing.Color.Transparent;
+            this.cFairyRewards.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cFairyRewards.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cFairyRewards.ForeColor = System.Drawing.Color.Black;
+            this.cFairyRewards.Location = new System.Drawing.Point(188, 53);
+            this.cFairyRewards.Name = "cFairyRewards";
+            this.cFairyRewards.Size = new System.Drawing.Size(122, 17);
+            this.cFairyRewards.TabIndex = 21;
+            this.cFairyRewards.Text = "Great Fairy Rewards";
+            this.cFairyRewards.UseVisualStyleBackColor = false;
             // 
             // lCustomItemAmount
             // 
@@ -444,9 +460,9 @@ namespace MMRando
             this.bItemListEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.bItemListEditor.Location = new System.Drawing.Point(120, 53);
+            this.bItemListEditor.Location = new System.Drawing.Point(120, 87);
             this.bItemListEditor.Name = "bItemListEditor";
-            this.bItemListEditor.Size = new System.Drawing.Size(86, 23);
+            this.bItemListEditor.Size = new System.Drawing.Size(86, 2);
             this.bItemListEditor.TabIndex = 18;
             this.bItemListEditor.Text = "Item List Editor";
             this.bItemListEditor.UseVisualStyleBackColor = true;
@@ -474,7 +490,7 @@ namespace MMRando
             this.cCrazyStartingItems.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cCrazyStartingItems.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cCrazyStartingItems.ForeColor = System.Drawing.Color.Black;
-            this.cCrazyStartingItems.Location = new System.Drawing.Point(191, 99);
+            this.cCrazyStartingItems.Location = new System.Drawing.Point(191, 122);
             this.cCrazyStartingItems.Name = "cCrazyStartingItems";
             this.cCrazyStartingItems.Size = new System.Drawing.Size(119, 17);
             this.cCrazyStartingItems.TabIndex = 17;
@@ -516,7 +532,7 @@ namespace MMRando
             this.cNutChest.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cNutChest.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cNutChest.ForeColor = System.Drawing.Color.Black;
-            this.cNutChest.Location = new System.Drawing.Point(166, 76);
+            this.cNutChest.Location = new System.Drawing.Point(166, 99);
             this.cNutChest.Name = "cNutChest";
             this.cNutChest.Size = new System.Drawing.Size(144, 17);
             this.cNutChest.TabIndex = 16;
@@ -544,7 +560,7 @@ namespace MMRando
             this.cAdditional.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cAdditional.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cAdditional.ForeColor = System.Drawing.Color.Black;
-            this.cAdditional.Location = new System.Drawing.Point(212, 53);
+            this.cAdditional.Location = new System.Drawing.Point(212, 76);
             this.cAdditional.Name = "cAdditional";
             this.cAdditional.Size = new System.Drawing.Size(98, 17);
             this.cAdditional.TabIndex = 12;
@@ -797,7 +813,7 @@ namespace MMRando
             this.cEponaSword.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cEponaSword.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cEponaSword.ForeColor = System.Drawing.Color.Black;
-            this.cEponaSword.Location = new System.Drawing.Point(39, 115);
+            this.cEponaSword.Location = new System.Drawing.Point(41, 115);
             this.cEponaSword.Name = "cEponaSword";
             this.cEponaSword.Size = new System.Drawing.Size(104, 17);
             this.cEponaSword.TabIndex = 22;
@@ -1076,7 +1092,7 @@ namespace MMRando
             // 
             this.mExit.Name = "mExit";
             this.mExit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.mExit.Size = new System.Drawing.Size(134, 22);
+            this.mExit.Size = new System.Drawing.Size(135, 22);
             this.mExit.Text = "Exit";
             this.mExit.Click += new System.EventHandler(this.mExit_Click);
             // 
@@ -1131,7 +1147,7 @@ namespace MMRando
             // 
             // pProgress
             // 
-            this.pProgress.Location = new System.Drawing.Point(8, 440);
+            this.pProgress.Location = new System.Drawing.Point(11, 473);
             this.pProgress.Margin = new System.Windows.Forms.Padding(2);
             this.pProgress.Name = "pProgress";
             this.pProgress.Size = new System.Drawing.Size(339, 19);
@@ -1146,7 +1162,7 @@ namespace MMRando
             // 
             this.lStatus.AutoSize = true;
             this.lStatus.BackColor = System.Drawing.Color.Transparent;
-            this.lStatus.Location = new System.Drawing.Point(12, 421);
+            this.lStatus.Location = new System.Drawing.Point(15, 454);
             this.lStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lStatus.Name = "lStatus";
             this.lStatus.Size = new System.Drawing.Size(47, 13);
@@ -1179,7 +1195,7 @@ namespace MMRando
             this.cDummy.AutoSize = true;
             this.cDummy.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cDummy.Enabled = false;
-            this.cDummy.Location = new System.Drawing.Point(262, 417);
+            this.cDummy.Location = new System.Drawing.Point(265, 450);
             this.cDummy.Name = "cDummy";
             this.cDummy.Size = new System.Drawing.Size(80, 17);
             this.cDummy.TabIndex = 6;
@@ -1191,7 +1207,7 @@ namespace MMRando
             // 
             this.lHrule.AutoSize = true;
             this.lHrule.ForeColor = System.Drawing.SystemColors.ActiveBorder;
-            this.lHrule.Location = new System.Drawing.Point(17, 305);
+            this.lHrule.Location = new System.Drawing.Point(20, 338);
             this.lHrule.Name = "lHrule";
             this.lHrule.Size = new System.Drawing.Size(325, 13);
             this.lHrule.TabIndex = 2;
@@ -1201,7 +1217,7 @@ namespace MMRando
             // 
             this.label5.AutoSize = true;
             this.label5.ForeColor = System.Drawing.SystemColors.ActiveBorder;
-            this.label5.Location = new System.Drawing.Point(17, 402);
+            this.label5.Location = new System.Drawing.Point(20, 435);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(325, 13);
             this.label5.TabIndex = 4;
@@ -1215,7 +1231,7 @@ namespace MMRando
             // 
             this.ttOutput.Controls.Add(this.tpOutputSettings);
             this.ttOutput.Controls.Add(this.tpPatchSettings);
-            this.ttOutput.Location = new System.Drawing.Point(1, 322);
+            this.ttOutput.Location = new System.Drawing.Point(4, 355);
             this.ttOutput.Name = "ttOutput";
             this.ttOutput.SelectedIndex = 0;
             this.ttOutput.Size = new System.Drawing.Size(354, 89);
@@ -1271,7 +1287,7 @@ namespace MMRando
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(355, 466);
+            this.ClientSize = new System.Drawing.Size(355, 503);
             this.Controls.Add(this.ttOutput);
             this.Controls.Add(this.lStatus);
             this.Controls.Add(this.cDummy);
@@ -1419,6 +1435,7 @@ namespace MMRando
         private System.Windows.Forms.Button bItemListEditor;
         private System.Windows.Forms.TextBox tCustomItemList;
         private System.Windows.Forms.Label lCustomItemAmount;
+        private System.Windows.Forms.CheckBox cFairyRewards;
     }
 }
 
